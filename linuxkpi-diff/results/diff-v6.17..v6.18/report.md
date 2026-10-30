@@ -1,16 +1,42 @@
-# Kernel interfaces used by DRM: v6.17 → v6.18
+# Kernel interfaces used by LinuxKPI consumers: v6.17 → v6.18
+
+## Overview by group
+
+Interface counts per consumer group (parents include their children). Per-group reports are in `groups/`.
+
+| group | used | newly used | no longer used | renames | declaration changed | changed types | hdr: newly used | hdr: no longer used | hdr: renames | hdr: signature changed |
+|---|---|---|---|---|---|---|---|---|---|---|
+| [drm](groups/drm.md) | 1056 | 15 | 2 | 0 | 7 | 64 | 35 | 7 | 0 | 14 |
+| &nbsp;&nbsp;[drm/core](groups/drm-core.md) | 368 | 5 | 2 | 0 | 1 | 60 | 3 | 0 | 0 | 6 |
+| &nbsp;&nbsp;[drm/ttm](groups/drm-ttm.md) | 127 | 0 | 0 | 0 | 1 | 59 | 0 | 0 | 0 | 5 |
+| &nbsp;&nbsp;[drm/sched](groups/drm-sched.md) | 92 | 1 | 0 | 0 | 0 | 59 | 0 | 0 | 0 | 0 |
+| &nbsp;&nbsp;[drm/amdgpu](groups/drm-amdgpu.md) | 539 | 7 | 1 | 0 | 2 | 62 | 17 | 0 | 0 | 3 |
+| &nbsp;&nbsp;[drm/radeon](groups/drm-radeon.md) | 273 | 4 | 0 | 0 | 1 | 60 | 2 | 0 | 0 | 1 |
+| &nbsp;&nbsp;[drm/i915](groups/drm-i915.md) | 686 | 4 | 1 | 0 | 3 | 64 | 7 | 2 | 0 | 11 |
+| &nbsp;&nbsp;[drm/xe](groups/drm-xe.md) | 540 | 6 | 1 | 0 | 6 | 63 | 9 | 5 | 0 | 3 |
+| [wifi](groups/wifi.md) | 736 | 5 | 1 | 0 | 1 | 85 | 6 | 11 | 0 | 2 |
+| &nbsp;&nbsp;[wifi/iwlwifi](groups/wifi-iwlwifi.md) | 376 | 2 | 1 | 0 | 0 | 78 | 1 | 11 | 0 | 1 |
+| &nbsp;&nbsp;[wifi/mt76](groups/wifi-mt76.md) | 340 | 2 | 0 | 0 | 1 | 74 | 0 | 0 | 0 | 0 |
+| &nbsp;&nbsp;[wifi/rtw88](groups/wifi-rtw88.md) | 189 | 0 | 0 | 0 | 0 | 74 | 0 | 0 | 0 | 2 |
+| &nbsp;&nbsp;[wifi/rtw89](groups/wifi-rtw89.md) | 224 | 1 | 0 | 0 | 0 | 74 | 0 | 0 | 0 | 2 |
+| &nbsp;&nbsp;[wifi/ath](groups/wifi-ath.md) | 16 | 0 | 0 | 0 | 0 | 61 | 0 | 0 | 0 | 0 |
+| &nbsp;&nbsp;[wifi/ath10k](groups/wifi-ath10k.md) | 232 | 0 | 0 | 0 | 1 | 75 | 0 | 0 | 0 | 0 |
+| &nbsp;&nbsp;[wifi/ath11k](groups/wifi-ath11k.md) | 270 | 1 | 0 | 0 | 0 | 74 | 1 | 0 | 0 | 0 |
+| &nbsp;&nbsp;[wifi/ath12k](groups/wifi-ath12k.md) | 255 | 1 | 0 | 0 | 0 | 74 | 2 | 0 | 0 | 0 |
+| &nbsp;&nbsp;[wifi/brcm80211](groups/wifi-brcm80211.md) | 217 | 1 | 0 | 0 | 0 | 72 | 2 | 0 | 0 | 0 |
+
+## Symbol-level summary
 
 | | count |
 |---|---|
-| interfaces used in v6.17 | 1071 |
-| interfaces used in v6.18 | 1082 |
+| interfaces used in v6.17 | 1469 |
+| interfaces used in v6.18 | 1485 |
 | likely renames | 0 |
-| newly used (excluding renames) | 13 |
+| newly used (excluding renames) | 18 |
 | no longer used (excluding renames) | 2 |
 | export kind/owner/namespace changed | 0 |
 | used in both, own declaration changed | 7 |
-| changed types reachable from used interfaces | 58 |
-| used interfaces reaching at least one changed type | 507 |
+| changed types reachable from used interfaces | 89 |
 
 ## Likely renames
 
@@ -21,24 +47,29 @@ None.
 | symbol | kind | exporter | export | defined in | used by |
 |---|---|---|---|---|---|
 | `USER_PTR_MAX` | data | vmlinux | plain | arch/x86/include/asm/uaccess_64.h | drm,i915,radeon |
+| `build_skb` | func | vmlinux | plain | net/core/skbuff.c | mt7996e |
 | `devm_i2c_add_adapter` | func | vmlinux | GPL | drivers/i2c/i2c-core-base.c | amdgpu |
 | `devm_remove_action_nowarn` | func | vmlinux | GPL | drivers/base/devres.c | xe |
+| `dmam_free_coherent` | func | vmlinux | plain | kernel/dma/mapping.c | mt7996e |
 | `down_write_trylock` | func | vmlinux | plain | kernel/locking/rwsem.c | xe |
 | `hrtimer_cb_get_time` | func | vmlinux | GPL | kernel/time/hrtimer.c | amdgpu,i915,xe |
-| `krealloc_node_align_noprof` | func | vmlinux | plain | mm/slub.c | amdgpu,drm,drm_kms_helper,i915,xe |
+| `ieee80211_find_sta_by_link_addrs` | func | net/mac80211/mac80211 | GPL | net/mac80211/sta_info.c | ath12k |
+| `krealloc_node_align_noprof` | func | vmlinux | plain | mm/slub.c | amdgpu,drm,drm_kms_helper,i915,xe,iwlwifi |
 | `kvrealloc_node_align_noprof` | func | vmlinux | plain | mm/slub.c | drm_exec |
 | `pm_hibernation_mode_is_suspend` | func | vmlinux | GPL | kernel/power/hibernate.c | amdgpu |
-| `system_percpu_wq` | data | vmlinux | plain | include/linux/workqueue.h | amdgpu,drm,drm_display_helper,drm_kms_helper,gpu-sched,i915,radeon,virtio-gpu,xe |
+| `system_percpu_wq` | data | vmlinux | plain | include/linux/workqueue.h | amdgpu,drm_display_helper,drm,drm_kms_helper,i915,radeon,gpu-sched,xe,ath11k,brcmfmac,iwlwifi,iwlmld,iwlmvm,rtw89_core |
 | `system_state` | func | vmlinux | plain | include/linux/kernel.h | amdgpu |
 | `vcalloc_noprof` | func | vmlinux | plain | mm/util.c | radeon |
 | `video_is_primary_device` | func | vmlinux | plain | arch/x86/video/video-common.c | drm |
 | `vmalloc_array_noprof` | func | vmlinux | plain | mm/util.c | radeon |
+| `vmemdup_user` | func | vmlinux | plain | mm/util.c | amdgpu |
+| `vmf_insert_pfn` | func | vmlinux | plain | mm/memory.c | xe |
 
 ## No longer used in v6.18
 
 | symbol | kind | exporter | export | defined in | used by |
 |---|---|---|---|---|---|
-| `krealloc_noprof` | func | vmlinux | plain | mm/slub.c | amdgpu,drm,drm_kms_helper,i915,xe |
+| `krealloc_noprof` | func | vmlinux | plain | mm/slub.c | amdgpu,drm,drm_kms_helper,i915,xe,iwlwifi |
 | `kvrealloc_noprof` | func | vmlinux | plain | mm/slub.c | drm_exec |
 
 ## Interfaces whose own declaration changed
@@ -114,74 +145,189 @@ Return/parameter types, variable types, or interfaces that lost their debug info
             'unsigned int inum' offset changed from 128 to 192 (in bits) (by +64 bits)
 ```
 
-Reaches 490 used interfaces.
-
 ## Changed types
 
-Each type that changed and is reachable from an interface DRM uses, with the number of used interfaces it reaches, fewest first: low counts are targeted changes, high counts are churn reached via hub types (reachability is transitive through pointers, so e.g. `struct device` or `struct module` pull in hundreds). Per-interface index: `impacted.tsv`; raw report: `abidiff-leaf.txt`.
+Each changed type reachable from an interface this group uses, with the number of those interfaces it reaches, fewest first: low counts are targeted changes, high counts are churn reached through hub types (reachability is transitive through pointers, so e.g. `struct device` or `struct module` pull in hundreds).
 
 | type | declared at | change | used interfaces reached |
 |---|---|---|---|
+| `enum nl80211_attrs` | nl80211.h:2935:1 | 5 enumerator insertions; 3 enumerator changes | 1 |
+| `enum nl80211_commands` | nl80211.h:1350:1 | 2 enumerator insertions; 2 enumerator changes | 1 |
+| `struct cfg80211_csa_settings` | cfg80211.h:1559:1 | type size changed from 3392 to 3456 (in bits); there are data member changes | 1 |
+| `struct cfg80211_ibss_params` | cfg80211.h:3385:1 | type size changed from 1344 to 1408 (in bits); there are data member changes | 1 |
 | `struct drm_device` | drm_device.h:68:1 | type size changed from 12608 to 12352 (in bits); 1 data member deletion; there are data member changes | 1 |
+| `struct ieee80211_channel_switch` | mac80211.h:1838:1 | type size changed from 448 to 512 (in bits); there are data member changes | 1 |
 | `struct kmem_cache_args` | slab.h:281:1 | type size changed from 256 to 320 (in bits); 1 data member insertion | 1 |
 | `struct ma_state` | maple_tree.h:438:1 | type size changed from 576 to 704 (in bits); 2 data member insertions; there are data member changes | 1 |
+| `struct mesh_setup` | cfg80211.h:2636:1 | type size changed from 3648 to 5632 (in bits); there are data member changes | 1 |
+| `struct ocb_setup` | cfg80211.h:2664:1 | type size changed from 256 to 320 (in bits); there are data member changes | 1 |
 | `enum hwmon_sensor_types` | hwmon.h:20:1 | 1 enumerator insertion; 5 enumerator changes | 2 |
+| `struct cfg80211_nan_conf` | cfg80211.h:3899:1 | type size changed from 16 to 1216 (in bits); 10 data member insertions | 2 |
+| `struct cfg80211_tid_cfg` | cfg80211.h:867:1 | type size changed from 3200 to 5120 (in bits); there are data member changes | 2 |
+| `struct nvmem_device` | internals.h:10:1 | type size changed from 7808 to 7680 (in bits); there are data member changes | 2 |
 | `struct swap_info_struct` | swap.h:297:1 | type size changed from 2816 to 2752 (in bits); 1 data member deletion; there are data member changes | 2 |
-| `struct virtio_device` | virtio.h:152:1 | type size changed from 6464 to 6592 (in bits); 2 data member insertions; there are data member changes | 10 |
-| `struct pci_dev` | pci.h:337:1 | 2 data member insertions; there are data member changes | 82 |
-| `enum bpf_arg_type` | bpf.h:784:1 | 1 enumerator change | 490 |
-| `enum bpf_reg_type` | bpf.h:941:1 | 1 enumerator change | 490 |
-| `enum bpf_return_type` | bpf.h:843:1 | 1 enumerator change | 490 |
-| `struct bio` | blk_types.h:214:1 | 1 data member deletion; there are data member changes | 490 |
-| `struct bio_set` | bio.h:641:1 | there are data member changes | 490 |
-| `struct block_device_operations` | blkdev.h:1650:1 | there are data member changes | 490 |
-| `struct bpf_map` | bpf.h:290:1 | type size changed from 1920 to 2240 (in bits); 2 data member insertions; there are data member changes | 490 |
-| `struct bpf_map_ops` | bpf.h:82:1 | type size changed from 2752 to 2816 (in bits); 1 data member insertion; there are data member changes | 490 |
-| `struct bpf_map_owner` | bpf.h:282:1 | type size changed from 256 to 320 (in bits); 1 data member insertion | 490 |
-| `struct bpf_offloaded_map` | bpf.h:619:1 | type size changed from 2240 to 2560 (in bits); there are data member changes | 490 |
-| `struct bpf_prog` | bpf.h:1693:1 | type size changed from 576 to 768 (in bits); there are data member changes | 490 |
-| `struct bpf_prog_aux` | bpf.h:1582:1 | type size changed from 10304 to 10368 (in bits); 2 data member insertions; there are data member changes | 490 |
-| `struct btf_record` | bpf.h:254:1 | 1 data member insertion | 490 |
-| `struct dst_entry` | dst.h:26:1 | type size hasn't changed | 490 |
-| `struct gendisk` | blkdev.h:143:1 | there are data member changes | 490 |
-| `struct kmem_cache` | slab.h:234:1 | type size changed from 5632 to 5696 (in bits); 3 data member insertions; there are data member changes | 490 |
-| `struct kmem_cache_cpu` | slub.c:400:1 | type size changed from 256 to 384 (in bits); there are data member changes | 490 |
-| `struct kmem_cache_node` | slub.c:441:1 | type size changed from 512 to 576 (in bits); 1 data member insertion | 490 |
-| `struct mnt_namespace` | mount.h:10:1 | type size changed from 1536 to 1600 (in bits); 4 data member deletions; 1 data member insertion; there are data member changes | 490 |
-| `struct mount` | mount.h:49:1 | 1 data member insertion; there are data member changes | 490 |
-| `struct msi_domain_ops` | msi.h:453:1 | type size changed from 704 to 640 (in bits); 1 data member deletion; there are data member changes | 490 |
-| `struct net` | net_namespace.h:61:1 | type size changed from 30208 to 30720 (in bits); there are data member changes | 490 |
-| `struct per_cpu_nodestat` | mmzone.h:762:1 | type size changed from 384 to 392 (in bits); there are data member changes | 490 |
-| `struct perf_buffer` | internal.h:13:1 | there are data member changes | 490 |
-| `struct perf_event` | perf_event.h:764:1 | there are data member changes | 490 |
-| `struct pglist_data` | mmzone.h:1360:1 | there are data member changes | 490 |
-| `struct proc_ns_operations` | proc_ns.h:17:1 | type size changed from 512 to 448 (in bits); 1 data member deletion; there are data member changes | 490 |
-| `struct proto` | sock.h:1251:1 | type size changed from 3584 to 3520 (in bits); 1 data member deletion; there are data member changes | 490 |
-| `struct sock` | sock.h:352:1 | 1 data member deletion; 1 data member insertion; there are data member changes | 490 |
-| `union bpf_attr` | bpf.h:1484:1 | type size changed from 1216 to 1344 (in bits); 1 data member deletion; 1 data member insertion; there are data member changes | 490 |
-| `struct trace_iterator` | trace_events.h:96:1 | type size changed from 132736 to 132608 (in bits); there are data member changes | 492 |
-| `struct pid_namespace` | pid_namespace.h:26:1 | type size changed from 2304 to 2752 (in bits); there are data member changes | 494 |
-| `struct cgroup` | cgroup-defs.h:438:1 | there are data member changes | 496 |
-| `struct cgroup_namespace` | cgroup.h:786:1 | type size changed from 384 to 832 (in bits); there are data member changes | 496 |
-| `struct cgroup_root` | cgroup-defs.h:603:1 | there are data member changes | 496 |
-| `struct cgroup_subsys` | cgroup-defs.h:732:1 | type size changed from 2112 to 2048 (in bits); 1 data member deletion; there are data member changes | 496 |
-| `struct user_namespace` | user_namespace.h:76:1 | type size changed from 4736 to 5184 (in bits); there are data member changes | 496 |
-| `struct arch_uprobe` | uprobes.h:25:1 | type size changed from 256 to 320 (in bits); 1 data member insertion | 498 |
-| `struct attribute_group` | sysfs.h:99:1 | there are data member changes | 498 |
-| `struct bin_attribute` | sysfs.h:304:1 | type size changed from 704 to 576 (in bits); 2 data member deletions; there are data member changes | 498 |
-| `struct dentry` | dcache.h:92:1 | type size hasn't changed | 498 |
-| `struct file` | fs.h:1099:1 | type size hasn't changed | 498 |
-| `struct inode` | fs.h:675:1 | there are data member changes | 498 |
-| `struct mm_struct` | mm_types.h:937:1 | type size hasn't changed | 498 |
-| `struct page` | mm_types.h:73:1 | there are data member changes | 498 |
-| `struct signal_struct` | signal.h:94:1 | type size changed from 8768 to 9088 (in bits); 1 data member insertion; there are data member changes | 498 |
-| `struct super_block` | fs.h:1328:1 | type size changed from 10752 to 10240 (in bits); there are data member changes | 498 |
-| `struct uprobes_state` | uprobes.h:186:1 | type size changed from 64 to 128 (in bits); 1 data member insertion | 498 |
-| `struct vm_area_desc` | mm_types.h:786:1 | type size changed from 576 to 640 (in bits); 1 data member insertion; there are data member changes | 498 |
-| `struct vm_operations_struct` | mm.h:586:1 | type size changed from 1024 to 960 (in bits); 1 data member deletion | 498 |
-| `struct hrtimer_clock_base` | hrtimer_defs.h:47:1 | 1 data member deletion; there are data member changes | 504 |
+| `struct ptp_clock` | ptp_private.h:43:1 | there are data member changes | 3 |
+| `struct ptp_clock_info` | ptp_clock_kernel.h:184:1 | type size changed from 1536 to 1664 (in bits); 2 data member insertions; there are data member changes | 3 |
+| `enum skb_drop_reason` | dropreason-core.h:137:1 | 2 enumerator insertions; 1 enumerator change | 4 |
+| `struct cfg80211_pmsr_request_peer` | cfg80211.h:4236:1 | type size changed from 448 to 512 (in bits); there are data member changes | 4 |
+| `struct thermal_zone_device` | thermal_core.h:116:1 | there are data member changes | 6 |
+| `struct cfg80211_ap_settings` | cfg80211.h:1486:1 | type size changed from 7552 to 9536 (in bits); there are data member changes | 61 |
+| `struct ieee80211_conf` | mac80211.h:1803:1 | type size changed from 512 to 576 (in bits); there are data member changes | 63 |
+| `struct ieee80211_hw` | mac80211.h:3061:1 | type size changed from 1536 to 1600 (in bits); there are data member changes | 63 |
+| `struct cfg80211_bitrate_mask` | cfg80211.h:838:1 | type size changed from 2880 to 4800 (in bits); there are data member changes | 77 |
+| `struct ieee80211_bss_conf` | mac80211.h:764:1 | type size changed from 7104 to 9152 (in bits); there are data member changes | 77 |
+| `struct ieee80211_vif` | mac80211.h:2038:1 | type size changed from 9472 to 11520 (in bits); there are data member changes | 77 |
+| `struct ieee80211_chanctx_conf` | mac80211.h:263:1 | type size changed from 832 to 1024 (in bits); there are data member changes | 83 |
+| `struct pci_dev` | pci.h:337:1 | 2 data member insertions; there are data member changes | 99 |
+| `struct cfg80211_chan_def` | cfg80211.h:825:1 | type size changed from 256 to 320 (in bits); 1 data member insertion | 111 |
+| `struct wiphy` | cfg80211.h:5851:1 | 2 data member insertions; there are data member changes | 126 |
+| `struct wireless_dev` | cfg80211.h:6459:1 | type size changed from 11840 to 12928 (in bits); there are data member changes | 126 |
+| `struct bio` | blk_types.h:214:1 | 1 data member deletion; there are data member changes | 611 |
+| `struct bio_set` | bio.h:641:1 | there are data member changes | 611 |
+| `struct block_device_operations` | blkdev.h:1650:1 | there are data member changes | 611 |
+| `struct gendisk` | blkdev.h:143:1 | there are data member changes | 611 |
+| `struct kmem_cache` | slab.h:234:1 | type size changed from 5632 to 5696 (in bits); 3 data member insertions; there are data member changes | 611 |
+| `struct kmem_cache_cpu` | slub.c:400:1 | type size changed from 256 to 384 (in bits); there are data member changes | 611 |
+| `struct kmem_cache_node` | slub.c:441:1 | type size changed from 512 to 576 (in bits); 1 data member insertion | 611 |
+| `struct mnt_namespace` | mount.h:10:1 | type size changed from 1536 to 1600 (in bits); 4 data member deletions; 1 data member insertion; there are data member changes | 611 |
+| `struct mount` | mount.h:49:1 | 1 data member insertion; there are data member changes | 611 |
+| `struct msi_domain_ops` | msi.h:453:1 | type size changed from 704 to 640 (in bits); 1 data member deletion; there are data member changes | 611 |
+| `struct netdev_queue_mgmt_ops` | netdev_queues.h:134:1 | type size changed from 320 to 384 (in bits); 1 data member insertion | 611 |
+| `struct netpoll_info` | netpoll.h:49:1 | type size changed from 1344 to 1280 (in bits); 1 data member deletion; there are data member changes | 611 |
+| `struct per_cpu_nodestat` | mmzone.h:762:1 | type size changed from 384 to 392 (in bits); there are data member changes | 611 |
+| `struct perf_buffer` | internal.h:13:1 | there are data member changes | 611 |
+| `struct pglist_data` | mmzone.h:1360:1 | there are data member changes | 611 |
+| `struct proc_ns_operations` | proc_ns.h:17:1 | type size changed from 512 to 448 (in bits); 1 data member deletion; there are data member changes | 611 |
+| `struct rps_dev_flow` | rps.h:31:1 | type size changed from 64 to 96 (in bits); 1 data member insertion | 611 |
+| `struct rt6_info` | ip6_fib.h:207:1 | there are data member changes | 611 |
+| `struct rtable` | route.h:57:1 | there are data member changes | 611 |
+| `struct perf_event` | perf_event.h:764:1 | there are data member changes | 626 |
+| `struct trace_iterator` | trace_events.h:96:1 | type size changed from 132736 to 132608 (in bits); there are data member changes | 628 |
+| `struct pid_namespace` | pid_namespace.h:26:1 | type size changed from 2304 to 2752 (in bits); there are data member changes | 630 |
+| `struct ethtool_ops` | ethtool.h:1097:1 | type size changed from 5184 to 5248 (in bits); 1 data member insertion; there are data member changes | 737 |
+| `struct bpf_offloaded_map` | bpf.h:619:1 | type size changed from 2240 to 2560 (in bits); there are data member changes | 744 |
+| `struct dst_entry` | dst.h:26:1 | type size hasn't changed | 744 |
+| `struct net` | net_namespace.h:61:1 | type size changed from 30208 to 30720 (in bits); there are data member changes | 744 |
+| `struct proto` | sock.h:1251:1 | type size changed from 3584 to 3520 (in bits); 1 data member deletion; there are data member changes | 744 |
+| `struct sock` | sock.h:352:1 | 1 data member deletion; 1 data member insertion; there are data member changes | 744 |
+| `struct timewait_sock_ops` | timewait_sock.h:14:1 | type size changed from 256 to 192 (in bits); 1 data member deletion | 744 |
+| `enum bpf_arg_type` | bpf.h:784:1 | 1 enumerator change | 759 |
+| `enum bpf_reg_type` | bpf.h:941:1 | 1 enumerator change | 759 |
+| `enum bpf_return_type` | bpf.h:843:1 | 1 enumerator change | 759 |
+| `struct bpf_map` | bpf.h:290:1 | type size changed from 1920 to 2240 (in bits); 2 data member insertions; there are data member changes | 759 |
+| `struct bpf_map_ops` | bpf.h:82:1 | type size changed from 2752 to 2816 (in bits); 1 data member insertion; there are data member changes | 759 |
+| `struct bpf_map_owner` | bpf.h:282:1 | type size changed from 256 to 320 (in bits); 1 data member insertion | 759 |
+| `struct bpf_prog` | bpf.h:1693:1 | type size changed from 576 to 768 (in bits); there are data member changes | 759 |
+| `struct bpf_prog_aux` | bpf.h:1582:1 | type size changed from 10304 to 10368 (in bits); 2 data member insertions; there are data member changes | 759 |
+| `struct btf_record` | bpf.h:254:1 | 1 data member insertion | 759 |
+| `union bpf_attr` | bpf.h:1484:1 | type size changed from 1216 to 1344 (in bits); 1 data member deletion; 1 data member insertion; there are data member changes | 759 |
+| `struct arch_uprobe` | uprobes.h:25:1 | type size changed from 256 to 320 (in bits); 1 data member insertion | 765 |
+| `struct attribute_group` | sysfs.h:99:1 | there are data member changes | 765 |
+| `struct bin_attribute` | sysfs.h:304:1 | type size changed from 704 to 576 (in bits); 2 data member deletions; there are data member changes | 765 |
+| `struct cgroup` | cgroup-defs.h:438:1 | there are data member changes | 765 |
+| `struct cgroup_namespace` | cgroup.h:786:1 | type size changed from 384 to 832 (in bits); there are data member changes | 765 |
+| `struct cgroup_root` | cgroup-defs.h:603:1 | there are data member changes | 765 |
+| `struct cgroup_subsys` | cgroup-defs.h:732:1 | type size changed from 2112 to 2048 (in bits); 1 data member deletion; there are data member changes | 765 |
+| `struct dentry` | dcache.h:92:1 | type size hasn't changed | 765 |
+| `struct file` | fs.h:1099:1 | type size hasn't changed | 765 |
+| `struct inode` | fs.h:675:1 | there are data member changes | 765 |
+| `struct mm_struct` | mm_types.h:937:1 | type size hasn't changed | 765 |
+| `struct page` | mm_types.h:73:1 | there are data member changes | 765 |
+| `struct signal_struct` | signal.h:94:1 | type size changed from 8768 to 9088 (in bits); 1 data member insertion; there are data member changes | 765 |
+| `struct super_block` | fs.h:1328:1 | type size changed from 10752 to 10240 (in bits); there are data member changes | 765 |
+| `struct uprobes_state` | uprobes.h:186:1 | type size changed from 64 to 128 (in bits); 1 data member insertion | 765 |
+| `struct user_namespace` | user_namespace.h:76:1 | type size changed from 4736 to 5184 (in bits); there are data member changes | 765 |
+| `struct vm_area_desc` | mm_types.h:786:1 | type size changed from 576 to 640 (in bits); 1 data member insertion; there are data member changes | 765 |
+| `struct vm_operations_struct` | mm.h:586:1 | type size changed from 1024 to 960 (in bits); 1 data member deletion | 765 |
+| `struct hrtimer_clock_base` | hrtimer_defs.h:47:1 | 1 data member deletion; there are data member changes | 771 |
 
 ### Details
+
+<details><summary><code>enum nl80211_attrs</code> (nl80211.h:2935:1)</summary>
+
+```
+  type size hasn't changed
+  5 enumerator insertions:
+    'nl80211_attrs::NL80211_ATTR_BSS_PARAM' value '341'
+    'nl80211_attrs::NL80211_ATTR_NAN_CONFIG' value '342'
+    'nl80211_attrs::NL80211_ATTR_NAN_NEW_CLUSTER' value '343'
+    'nl80211_attrs::NL80211_ATTR_NAN_CAPABILITIES' value '344'
+    'nl80211_attrs::NL80211_ATTR_S1G_PRIMARY_2MHZ' value '345'
+  3 enumerator changes:
+    'nl80211_attrs::NL80211_ATTR_MAX' from value '340' to '345' at nl80211.h:2980:1
+    'nl80211_attrs::NUM_NL80211_ATTR' from value '341' to '346' at nl80211.h:2980:1
+    'nl80211_attrs::__NL80211_ATTR_AFTER_LAST' from value '341' to '346' at nl80211.h:2980:1
+```
+
+Reaches: `function sk_buff* __cfg80211_alloc_reply_skb(wiphy*, nl80211_commands, nl80211_attrs, int)`
+
+</details>
+
+<details><summary><code>enum nl80211_commands</code> (nl80211.h:1350:1)</summary>
+
+```
+  type size hasn't changed
+  2 enumerator insertions:
+    'nl80211_commands::NL80211_CMD_NAN_NEXT_DW_NOTIFICATION' value '158'
+    'nl80211_commands::NL80211_CMD_NAN_CLUSTER_JOINED' value '159'
+  2 enumerator changes:
+    'nl80211_commands::NL80211_CMD_MAX' from value '157' to '159' at nl80211.h:1367:1
+    'nl80211_commands::__NL80211_CMD_AFTER_LAST' from value '158' to '160' at nl80211.h:1367:1
+```
+
+Reaches: `function sk_buff* __cfg80211_alloc_reply_skb(wiphy*, nl80211_commands, nl80211_attrs, int)`
+
+</details>
+
+<details><summary><code>struct cfg80211_csa_settings</code> (cfg80211.h:1559:1)</summary>
+
+```
+  type size changed from 3392 to 3456 (in bits)
+  there are data member changes:
+    type 'struct cfg80211_chan_def' of 'cfg80211_csa_settings::chandef' changed, as reported earlier
+    'cfg80211_beacon_data beacon_csa' offset changed from 256 to 320 (in bits) (by +64 bits)
+    'const u16* counter_offsets_beacon' offset changed from 1600 to 1664 (in bits) (by +64 bits)
+    'const u16* counter_offsets_presp' offset changed from 1664 to 1728 (in bits) (by +64 bits)
+    'unsigned int n_counter_offsets_beacon' offset changed from 1728 to 1792 (in bits) (by +64 bits)
+    'unsigned int n_counter_offsets_presp' offset changed from 1760 to 1824 (in bits) (by +64 bits)
+    'cfg80211_beacon_data beacon_after' offset changed from 1792 to 1856 (in bits) (by +64 bits)
+    'cfg80211_unsol_bcast_probe_resp unsol_bcast_probe_resp' offset changed from 3136 to 3200 (in bits) (by +64 bits)
+    'bool radar_required' offset changed from 3328 to 3392 (in bits) (by +64 bits)
+    'bool block_tx' offset changed from 3336 to 3400 (in bits) (by +64 bits)
+    'u8 count' offset changed from 3344 to 3408 (in bits) (by +64 bits)
+    'u8 link_id' offset changed from 3352 to 3416 (in bits) (by +64 bits)
+```
+
+Reaches: `function wiphy* wiphy_new_nm(const cfg80211_ops*, int, const char*)`
+
+</details>
+
+<details><summary><code>struct cfg80211_ibss_params</code> (cfg80211.h:3385:1)</summary>
+
+```
+  type size changed from 1344 to 1408 (in bits)
+  there are data member changes:
+    type 'struct cfg80211_chan_def' of 'cfg80211_ibss_params::chandef' changed, as reported earlier
+    'const u8* ie' offset changed from 384 to 448 (in bits) (by +64 bits)
+    'u8 ssid_len' offset changed from 448 to 512 (in bits) (by +64 bits)
+    'u8 ie_len' offset changed from 456 to 520 (in bits) (by +64 bits)
+    'u16 beacon_interval' offset changed from 464 to 528 (in bits) (by +64 bits)
+    'u32 basic_rates' offset changed from 480 to 544 (in bits) (by +64 bits)
+    'bool channel_fixed' offset changed from 512 to 576 (in bits) (by +64 bits)
+    'bool privacy' offset changed from 520 to 584 (in bits) (by +64 bits)
+    'bool control_port' offset changed from 528 to 592 (in bits) (by +64 bits)
+    'bool control_port_over_nl80211' offset changed from 536 to 600 (in bits) (by +64 bits)
+    'bool userspace_handles_dfs' offset changed from 544 to 608 (in bits) (by +64 bits)
+    'int mcast_rate[6]' offset changed from 576 to 640 (in bits) (by +64 bits)
+    'ieee80211_ht_cap ht_capa' offset changed from 768 to 832 (in bits) (by +64 bits)
+    'ieee80211_ht_cap ht_capa_mask' offset changed from 976 to 1040 (in bits) (by +64 bits)
+    'key_params* wep_keys' offset changed from 1216 to 1280 (in bits) (by +64 bits)
+    'int wep_tx_key' offset changed from 1280 to 1344 (in bits) (by +64 bits)
+```
+
+Reaches: `function wiphy* wiphy_new_nm(const cfg80211_ops*, int, const char*)`
+
+</details>
 
 <details><summary><code>struct drm_device</code> (drm_device.h:68:1)</summary>
 
@@ -216,6 +362,21 @@ Each type that changed and is reachable from an interface DRM uses, with the num
 ```
 
 Reaches: `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`
+
+</details>
+
+<details><summary><code>struct ieee80211_channel_switch</code> (mac80211.h:1838:1)</summary>
+
+```
+  type size changed from 448 to 512 (in bits)
+  there are data member changes:
+    type 'struct cfg80211_chan_def' of 'ieee80211_channel_switch::chandef' changed, as reported earlier
+    'u8 count' offset changed from 384 to 448 (in bits) (by +64 bits)
+    'u8 link_id' offset changed from 392 to 456 (in bits) (by +64 bits)
+    'u32 delay' offset changed from 416 to 480 (in bits) (by +64 bits)
+```
+
+Reaches: `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`
 
 </details>
 
@@ -254,6 +415,49 @@ Reaches: `function void* mas_find(ma_state*, unsigned long int)`
 
 </details>
 
+<details><summary><code>struct mesh_setup</code> (cfg80211.h:2636:1)</summary>
+
+```
+  type size changed from 3648 to 5632 (in bits)
+  there are data member changes:
+    type 'struct cfg80211_chan_def' of 'mesh_setup::chandef' changed, as reported earlier
+    'const u8* mesh_id' offset changed from 256 to 320 (in bits) (by +64 bits)
+    'u8 mesh_id_len' offset changed from 320 to 384 (in bits) (by +64 bits)
+    'u8 sync_method' offset changed from 328 to 392 (in bits) (by +64 bits)
+    'u8 path_sel_proto' offset changed from 336 to 400 (in bits) (by +64 bits)
+    'u8 path_metric' offset changed from 344 to 408 (in bits) (by +64 bits)
+    'u8 auth_id' offset changed from 352 to 416 (in bits) (by +64 bits)
+    'const u8* ie' offset changed from 384 to 448 (in bits) (by +64 bits)
+    'u8 ie_len' offset changed from 448 to 512 (in bits) (by +64 bits)
+    'bool is_authenticated' offset changed from 456 to 520 (in bits) (by +64 bits)
+    'bool is_secure' offset changed from 464 to 528 (in bits) (by +64 bits)
+    'bool user_mpm' offset changed from 472 to 536 (in bits) (by +64 bits)
+    'u8 dtim_period' offset changed from 480 to 544 (in bits) (by +64 bits)
+    'u16 beacon_interval' offset changed from 496 to 560 (in bits) (by +64 bits)
+    'int mcast_rate[6]' offset changed from 512 to 576 (in bits) (by +64 bits)
+    'u32 basic_rates' offset changed from 704 to 768 (in bits) (by +64 bits)
+    type 'struct cfg80211_bitrate_mask' of 'mesh_setup::beacon_rate' changed, as reported earlier
+    and offset changed from 736 to 800 (in bits) (by +64 bits)
+    'bool userspace_handles_dfs' offset changed from 3616 to 5600 (in bits) (by +1984 bits)
+    'bool control_port_over_nl80211' offset changed from 3624 to 5608 (in bits) (by +1984 bits)
+```
+
+Reaches: `function wiphy* wiphy_new_nm(const cfg80211_ops*, int, const char*)`
+
+</details>
+
+<details><summary><code>struct ocb_setup</code> (cfg80211.h:2664:1)</summary>
+
+```
+  type size changed from 256 to 320 (in bits)
+  there are data member changes:
+    type 'struct cfg80211_chan_def' of 'ocb_setup::chandef' changed, as reported earlier
+```
+
+Reaches: `function wiphy* wiphy_new_nm(const cfg80211_ops*, int, const char*)`
+
+</details>
+
 <details><summary><code>enum hwmon_sensor_types</code> (hwmon.h:20:1)</summary>
 
 ```
@@ -269,6 +473,62 @@ Reaches: `function void* mas_find(ma_state*, unsigned long int)`
 ```
 
 Reaches: `function device* devm_hwmon_device_register_with_info(device*, const char*, void*, const hwmon_chip_info*, const attribute_group**)`, `function device* hwmon_device_register_with_info(device*, const char*, void*, const hwmon_chip_info*, const attribute_group**)`
+
+</details>
+
+<details><summary><code>struct cfg80211_nan_conf</code> (cfg80211.h:3899:1)</summary>
+
+```
+  type size changed from 16 to 1216 (in bits)
+  10 data member insertions:
+    'const u8* cluster_id', at offset 64 (in bits) at cfg80211.h:3987:1
+    'u16 scan_period', at offset 128 (in bits) at cfg80211.h:3988:1
+    'u16 scan_dwell_time', at offset 144 (in bits) at cfg80211.h:3989:1
+    'u8 discovery_beacon_interval', at offset 160 (in bits) at cfg80211.h:3990:1
+    'bool enable_dw_notification', at offset 168 (in bits) at cfg80211.h:3991:1
+    'cfg80211_nan_band_config band_cfgs[6]', at offset 192 (in bits) at cfg80211.h:3992:1
+    'const u8* extra_nan_attrs', at offset 960 (in bits) at cfg80211.h:3993:1
+    'u16 extra_nan_attrs_len', at offset 1024 (in bits) at cfg80211.h:3994:1
+    'const u8* vendor_elems', at offset 1088 (in bits) at cfg80211.h:3995:1
+    'u16 vendor_elems_len', at offset 1152 (in bits) at cfg80211.h:3996:1
+```
+
+Reaches: `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function wiphy* wiphy_new_nm(const cfg80211_ops*, int, const char*)`
+
+</details>
+
+<details><summary><code>struct cfg80211_tid_cfg</code> (cfg80211.h:867:1)</summary>
+
+```
+  type size changed from 3200 to 5120 (in bits)
+  there are data member changes:
+    type 'struct cfg80211_bitrate_mask' of 'cfg80211_tid_cfg::txrate_mask' changed, as reported earlier
+```
+
+Reaches: `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function wiphy* wiphy_new_nm(const cfg80211_ops*, int, const char*)`
+
+</details>
+
+<details><summary><code>struct nvmem_device</code> (internals.h:10:1)</summary>
+
+```
+  type size changed from 7808 to 7680 (in bits)
+  there are data member changes:
+    type 'struct bin_attribute' of 'nvmem_device::eeprom' changed, as reported earlier
+    'device* base_dev' offset changed from 7040 to 6912 (in bits) (by -128 bits)
+    'list_head cells' offset changed from 7104 to 6976 (in bits) (by -128 bits)
+    'void (nvmem_device*, nvmem_cell_info*)* fixup_dt_cell_info' offset changed from 7232 to 7104 (in bits) (by -128 bits)
+    'const nvmem_keepout* keepout' offset changed from 7296 to 7168 (in bits) (by -128 bits)
+    'unsigned int nkeepout' offset changed from 7360 to 7232 (in bits) (by -128 bits)
+    'nvmem_reg_read_t reg_read' offset changed from 7424 to 7296 (in bits) (by -128 bits)
+    'nvmem_reg_write_t reg_write' offset changed from 7488 to 7360 (in bits) (by -128 bits)
+    'gpio_desc* wp_gpio' offset changed from 7552 to 7424 (in bits) (by -128 bits)
+    'nvmem_layout* layout' offset changed from 7616 to 7488 (in bits) (by -128 bits)
+    'void* priv' offset changed from 7680 to 7552 (in bits) (by -128 bits)
+    'bool sysfs_cells_populated' offset changed from 7744 to 7616 (in bits) (by -128 bits)
+```
+
+Reaches: `function nvmem_cell* devm_nvmem_cell_get(device*, const char*)`, `function void* nvmem_cell_read(nvmem_cell*, size_t*)`
 
 </details>
 
@@ -299,20 +559,309 @@ Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_a
 
 </details>
 
-<details><summary><code>struct virtio_device</code> (virtio.h:152:1)</summary>
+<details><summary><code>struct ptp_clock</code> (ptp_private.h:43:1)</summary>
 
 ```
-  type size changed from 6464 to 6592 (in bits)
-  2 data member insertions:
-    'const virtio_map_ops* map', at offset 6144 (in bits) at virtio.h:173:1
-    'virtio_map vmap', at offset 6528 (in bits) at virtio.h:177:1
+  type size hasn't changed
   there are data member changes:
-    'list_head vqs' offset changed from 6144 to 6208 (in bits) (by +64 bits)
-    anonymous data member 'union {u64 features; u64 features_array[2];}' offset changed from 6272 to 6336 (in bits) (by +64 bits)
-    'void* priv' offset changed from 6400 to 6464 (in bits) (by +64 bits)
+    type 'struct attribute_group' of 'ptp_clock::pin_attr_group' changed, as reported earlier
 ```
 
-Reaches: `function int __register_virtio_driver(virtio_driver*, module*)`, `function void unregister_virtio_driver(virtio_driver*)`, `function void virtio_check_driver_offered_feature(const virtio_device*, unsigned int)`, `function void virtio_reset_device(virtio_device*)`, `function int virtqueue_add_sgs(virtqueue*, scatterlist**, unsigned int, unsigned int, void*, gfp_t)`, `function void virtqueue_disable_cb(virtqueue*)`, `function bool virtqueue_enable_cb(virtqueue*)`, `function void* virtqueue_get_buf(virtqueue*, unsigned int*)`, `function bool virtqueue_kick_prepare(virtqueue*)`, `function bool virtqueue_notify(virtqueue*)`
+Reaches: `function int ptp_clock_index(ptp_clock*)`, `function ptp_clock* ptp_clock_register(ptp_clock_info*, device*)`, `function int ptp_clock_unregister(ptp_clock*)`
+
+</details>
+
+<details><summary><code>struct ptp_clock_info</code> (ptp_clock_kernel.h:184:1)</summary>
+
+```
+  type size changed from 1536 to 1664 (in bits)
+  2 data member insertions:
+    'int n_per_lp', at offset 480 (in bits) at ptp_clock_kernel.h:199:1
+    'int (ptp_clock_info*, unsigned int, int)* perout_loopback', at offset 1600 (in bits) at ptp_clock_kernel.h:224:1
+  there are data member changes:
+    'int pps' offset changed from 480 to 512 (in bits) (by +32 bits)
+    'unsigned int supported_perout_flags' offset changed from 512 to 544 (in bits) (by +32 bits)
+    'unsigned int supported_extts_flags' offset changed from 544 to 576 (in bits) (by +32 bits)
+    'ptp_pin_desc* pin_config' offset changed from 576 to 640 (in bits) (by +64 bits)
+    'int (ptp_clock_info*, long int)* adjfine' offset changed from 640 to 704 (in bits) (by +64 bits)
+    'int (ptp_clock_info*, typedef s32)* adjphase' offset changed from 704 to 768 (in bits) (by +64 bits)
+    'typedef s32 (ptp_clock_info*)* getmaxphase' offset changed from 768 to 832 (in bits) (by +64 bits)
+    'int (ptp_clock_info*, typedef s64)* adjtime' offset changed from 832 to 896 (in bits) (by +64 bits)
+    'int (ptp_clock_info*, timespec64*)* gettime64' offset changed from 896 to 960 (in bits) (by +64 bits)
+    'int (ptp_clock_info*, timespec64*, ptp_system_timestamp*)* gettimex64' offset changed from 960 to 1024 (in bits) (by +64 bits)
+    'int (ptp_clock_info*, system_device_crosststamp*)* getcrosststamp' offset changed from 1024 to 1088 (in bits) (by +64 bits)
+    'int (ptp_clock_info*, const timespec64*)* settime64' offset changed from 1088 to 1152 (in bits) (by +64 bits)
+    'int (ptp_clock_info*, timespec64*)* getcycles64' offset changed from 1152 to 1216 (in bits) (by +64 bits)
+    'int (ptp_clock_info*, timespec64*, ptp_system_timestamp*)* getcyclesx64' offset changed from 1216 to 1280 (in bits) (by +64 bits)
+    'int (ptp_clock_info*, system_device_crosststamp*)* getcrosscycles' offset changed from 1280 to 1344 (in bits) (by +64 bits)
+    'int (ptp_clock_info*, ptp_clock_request*, int)* enable' offset changed from 1344 to 1408 (in bits) (by +64 bits)
+    'int (ptp_clock_info*, unsigned int, enum ptp_pin_function, unsigned int)* verify' offset changed from 1408 to 1472 (in bits) (by +64 bits)
+    'long int (ptp_clock_info*)* do_aux_work' offset changed from 1472 to 1536 (in bits) (by +64 bits)
+```
+
+Reaches: `function int ptp_clock_index(ptp_clock*)`, `function ptp_clock* ptp_clock_register(ptp_clock_info*, device*)`, `function int ptp_clock_unregister(ptp_clock*)`
+
+</details>
+
+<details><summary><code>enum skb_drop_reason</code> (dropreason-core.h:137:1)</summary>
+
+```
+  type size hasn't changed
+  2 enumerator insertions:
+    'skb_drop_reason::SKB_DROP_REASON_PSP_INPUT' value '125'
+    'skb_drop_reason::SKB_DROP_REASON_PSP_OUTPUT' value '126'
+  1 enumerator change:
+    'skb_drop_reason::SKB_DROP_REASON_MAX' from value '125' to '127' at dropreason-core.h:139:1
+```
+
+Reaches: `function void dev_kfree_skb_any_reason(sk_buff*, skb_drop_reason)`, `function void dev_kfree_skb_irq_reason(sk_buff*, skb_drop_reason)`, `function void sk_skb_reason_drop(sock*, sk_buff*, skb_drop_reason)`, `function void skb_queue_purge_reason(sk_buff_head*, skb_drop_reason)`
+
+</details>
+
+<details><summary><code>struct cfg80211_pmsr_request_peer</code> (cfg80211.h:4236:1)</summary>
+
+```
+  type size changed from 448 to 512 (in bits)
+  there are data member changes:
+    type 'struct cfg80211_chan_def' of 'cfg80211_pmsr_request_peer::chandef' changed, as reported earlier
+    'u8 report_ap_tsf' offset changed from 320 to 384 (in bits) (by +64 bits)
+    'cfg80211_pmsr_ftm_request_peer ftm' offset changed from 352 to 416 (in bits) (by +64 bits)
+```
+
+Reaches: `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function void cfg80211_pmsr_complete(wireless_dev*, cfg80211_pmsr_request*, gfp_t)`, `function void cfg80211_pmsr_report(wireless_dev*, cfg80211_pmsr_request*, cfg80211_pmsr_result*, gfp_t)`, `function wiphy* wiphy_new_nm(const cfg80211_ops*, int, const char*)`
+
+</details>
+
+<details><summary><code>struct thermal_zone_device</code> (thermal_core.h:116:1)</summary>
+
+```
+  type size hasn't changed
+  there are data member changes:
+    type 'struct attribute_group' of 'thermal_zone_device::trips_attribute_group' changed, as reported earlier
+```
+
+Reaches: `function int for_each_thermal_trip(thermal_zone_device*, int (thermal_trip*, void*)*, void*)`, `function int thermal_zone_device_enable(thermal_zone_device*)`, `function void* thermal_zone_device_priv(thermal_zone_device*)`, `function thermal_zone_device* thermal_zone_device_register_with_trips(const char*, const thermal_trip*, int, void*, const thermal_zone_device_ops*, const thermal_zone_params*, unsigned int, unsigned int)`, `function void thermal_zone_device_unregister(thermal_zone_device*)`, `function void thermal_zone_device_update(thermal_zone_device*, thermal_notify_event)`
+
+</details>
+
+<details><summary><code>struct cfg80211_ap_settings</code> (cfg80211.h:1486:1)</summary>
+
+```
+  type size changed from 7552 to 9536 (in bits)
+  there are data member changes:
+    type 'struct cfg80211_chan_def' of 'cfg80211_ap_settings::chandef' changed:
+      type size changed from 256 to 320 (in bits)
+      1 data member insertion:
+        'bool s1g_primary_2mhz', at offset 256 (in bits) at cfg80211.h:833:1
+    'cfg80211_beacon_data beacon' offset changed from 256 to 320 (in bits) (by +64 bits)
+    'int beacon_interval' offset changed from 1600 to 1664 (in bits) (by +64 bits)
+    'int dtim_period' offset changed from 1632 to 1696 (in bits) (by +64 bits)
+    'const u8* ssid' offset changed from 1664 to 1728 (in bits) (by +64 bits)
+    'size_t ssid_len' offset changed from 1728 to 1792 (in bits) (by +64 bits)
+    'nl80211_hidden_ssid hidden_ssid' offset changed from 1792 to 1856 (in bits) (by +64 bits)
+    'cfg80211_crypto_settings crypto' offset changed from 1856 to 1920 (in bits) (by +64 bits)
+    'bool privacy' offset changed from 2752 to 2816 (in bits) (by +64 bits)
+    'nl80211_auth_type auth_type' offset changed from 2784 to 2848 (in bits) (by +64 bits)
+    'int inactivity_timeout' offset changed from 2816 to 2880 (in bits) (by +64 bits)
+    'u8 p2p_ctwindow' offset changed from 2848 to 2912 (in bits) (by +64 bits)
+    'bool p2p_opp_ps' offset changed from 2856 to 2920 (in bits) (by +64 bits)
+    'const cfg80211_acl_data* acl' offset changed from 2880 to 2944 (in bits) (by +64 bits)
+    'bool pbss' offset changed from 2944 to 3008 (in bits) (by +64 bits)
+    type 'struct cfg80211_bitrate_mask' of 'cfg80211_ap_settings::beacon_rate' changed:
+      type size changed from 2880 to 4800 (in bits)
+      there are data member changes:
+        '__anonymous_struct__165 control[6]' size changed from 2880 to 4800 (in bits) (by +1920 bits)
+    and offset changed from 2976 to 3040 (in bits) (by +64 bits)
+    'const ieee80211_ht_cap* ht_cap' offset changed from 5888 to 7872 (in bits) (by +1984 bits)
+    'const ieee80211_vht_cap* vht_cap' offset changed from 5952 to 7936 (in bits) (by +1984 bits)
+    'const ieee80211_he_cap_elem* he_cap' offset changed from 6016 to 8000 (in bits) (by +1984 bits)
+    'const ieee80211_he_operation* he_oper' offset changed from 6080 to 8064 (in bits) (by +1984 bits)
+    'const ieee80211_eht_cap_elem* eht_cap' offset changed from 6144 to 8128 (in bits) (by +1984 bits)
+    'const ieee80211_eht_operation* eht_oper' offset changed from 6208 to 8192 (in bits) (by +1984 bits)
+    'bool ht_required' offset changed from 6272 to 8256 (in bits) (by +1984 bits)
+    'bool vht_required' offset changed from 6280 to 8264 (in bits) (by +1984 bits)
+    'bool he_required' offset changed from 6288 to 8272 (in bits) (by +1984 bits)
+    'bool sae_h2e_required' offset changed from 6296 to 8280 (in bits) (by +1984 bits)
+    'bool twt_responder' offset changed from 6304 to 8288 (in bits) (by +1984 bits)
+    'u32 flags' offset changed from 6336 to 8320 (in bits) (by +1984 bits)
+    'ieee80211_he_obss_pd he_obss_pd' offset changed from 6368 to 8352 (in bits) (by +1984 bits)
+    'cfg80211_fils_discovery fils_discovery' offset changed from 6592 to 8576 (in bits) (by +1984 bits)
+    'cfg80211_unsol_bcast_probe_resp unsol_bcast_probe_resp' offset changed from 6848 to 8832 (in bits) (by +1984 bits)
+  ...
+```
+
+Reaches: `function sk_buff* __cfg80211_alloc_reply_skb(wiphy*, nl80211_commands, nl80211_attrs, int)`, `function cfg80211_bss* __cfg80211_get_bss(wiphy*, ieee80211_channel*, const u8*, const u8*, size_t, ieee80211_bss_type, ieee80211_privacy, u32)`, `function void __cfg80211_radar_event(wiphy*, cfg80211_chan_def*, bool, gfp_t)`, `function void cfg80211_bss_flush(wiphy*)`, `function void cfg80211_bss_iter(wiphy*, cfg80211_chan_def*, void (wiphy*, cfg80211_bss*, void*)*, void*)`, `function void cfg80211_chandef_create(cfg80211_chan_def*, ieee80211_channel*, nl80211_channel_type)`, `function unsigned int cfg80211_chandef_dfs_cac_time(wiphy*, const cfg80211_chan_def*)`, `function bool cfg80211_chandef_dfs_usable(wiphy*, const cfg80211_chan_def*)`, `function bool cfg80211_chandef_usable(wiphy*, const cfg80211_chan_def*, u32)`, `function bool cfg80211_chandef_valid(const cfg80211_chan_def*)`, `function int cfg80211_check_combinations(wiphy*, iface_combination_params*)`, `function unsigned int cfg80211_classify8021d(sk_buff*, cfg80211_qos_map*)`, `function void cfg80211_connect_done(net_device*, cfg80211_connect_resp_params*, gfp_t)`, `function void cfg80211_cqm_rssi_notify(net_device*, nl80211_cqm_rssi_threshold_event, s32, gfp_t)`, `function void cfg80211_crit_proto_stopped(wireless_dev*, gfp_t)` … (+46 more)
+
+</details>
+
+<details><summary><code>struct ieee80211_conf</code> (mac80211.h:1803:1)</summary>
+
+```
+  type size changed from 512 to 576 (in bits)
+  there are data member changes:
+    type 'struct cfg80211_chan_def' of 'ieee80211_conf::chandef' changed, as reported earlier
+    'bool radar_enabled' offset changed from 448 to 512 (in bits) (by +64 bits)
+    'ieee80211_smps_mode smps_mode' offset changed from 480 to 544 (in bits) (by +64 bits)
+```
+
+Reaches: `function const char* __ieee80211_create_tpt_led_trigger(ieee80211_hw*, unsigned int, const ieee80211_tpt_blink*, unsigned int)`, `function const char* __ieee80211_get_radio_led_name(ieee80211_hw*)`, `function void __ieee80211_schedule_txq(ieee80211_hw*, ieee80211_txq*, bool)`, `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function sk_buff* ieee80211_beacon_get_template(ieee80211_hw*, ieee80211_vif*, ieee80211_mutable_offsets*, unsigned int)`, `function ieee80211_ema_beacons* ieee80211_beacon_get_template_ema_list(ieee80211_hw*, ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_tim(ieee80211_hw*, ieee80211_vif*, u16*, u16*, unsigned int)`, `function u32 ieee80211_calc_rx_airtime(ieee80211_hw*, ieee80211_rx_status*, int)`, `function int ieee80211_emulate_add_chanctx(ieee80211_hw*, ieee80211_chanctx_conf*)`, `function void ieee80211_emulate_change_chanctx(ieee80211_hw*, ieee80211_chanctx_conf*, u32)`, `function void ieee80211_emulate_remove_chanctx(ieee80211_hw*, ieee80211_chanctx_conf*)`, `function int ieee80211_emulate_switch_vif_chanctx(ieee80211_hw*, ieee80211_vif_chanctx_switch*, int, ieee80211_chanctx_switch_mode)`, `function ieee80211_sta* ieee80211_find_sta_by_ifaddr(ieee80211_hw*, const u8*, const u8*)`, `function void ieee80211_free_hw(ieee80211_hw*)`, `function void ieee80211_free_txskb(ieee80211_hw*, sk_buff*)` … (+48 more)
+
+</details>
+
+<details><summary><code>struct ieee80211_hw</code> (mac80211.h:3061:1)</summary>
+
+```
+  type size changed from 1536 to 1600 (in bits)
+  there are data member changes:
+    type 'struct ieee80211_conf' of 'ieee80211_hw::conf' changed, as reported earlier
+    'wiphy* wiphy' offset changed from 512 to 576 (in bits) (by +64 bits)
+    'const char* rate_control_algorithm' offset changed from 576 to 640 (in bits) (by +64 bits)
+    'void* priv' offset changed from 640 to 704 (in bits) (by +64 bits)
+    'unsigned long int flags[1]' offset changed from 704 to 768 (in bits) (by +64 bits)
+    'unsigned int extra_tx_headroom' offset changed from 768 to 832 (in bits) (by +64 bits)
+    'unsigned int extra_beacon_tailroom' offset changed from 800 to 864 (in bits) (by +64 bits)
+    'int vif_data_size' offset changed from 832 to 896 (in bits) (by +64 bits)
+    'int sta_data_size' offset changed from 864 to 928 (in bits) (by +64 bits)
+    'int chanctx_data_size' offset changed from 896 to 960 (in bits) (by +64 bits)
+    'int txq_data_size' offset changed from 928 to 992 (in bits) (by +64 bits)
+    'u16 queues' offset changed from 960 to 1024 (in bits) (by +64 bits)
+    'u16 max_listen_interval' offset changed from 976 to 1040 (in bits) (by +64 bits)
+    's8 max_signal' offset changed from 992 to 1056 (in bits) (by +64 bits)
+    'u8 max_rates' offset changed from 1000 to 1064 (in bits) (by +64 bits)
+    'u8 max_report_rates' offset changed from 1008 to 1072 (in bits) (by +64 bits)
+    'u8 max_rate_tries' offset changed from 1016 to 1080 (in bits) (by +64 bits)
+    'u16 max_rx_aggregation_subframes' offset changed from 1024 to 1088 (in bits) (by +64 bits)
+    'u16 max_tx_aggregation_subframes' offset changed from 1040 to 1104 (in bits) (by +64 bits)
+    'u8 max_tx_fragments' offset changed from 1056 to 1120 (in bits) (by +64 bits)
+    'u8 offchannel_tx_hw_queue' offset changed from 1064 to 1128 (in bits) (by +64 bits)
+    'u8 radiotap_mcs_details' offset changed from 1072 to 1136 (in bits) (by +64 bits)
+    'u16 radiotap_vht_details' offset changed from 1088 to 1152 (in bits) (by +64 bits)
+    'struct {int units_pos; s16 accuracy;} radiotap_timestamp' offset changed from 1120 to 1184 (in bits) (by +64 bits)
+    'netdev_features_t netdev_features' offset changed from 1216 to 1280 (in bits) (by +64 bits)
+    'u8 uapsd_queues' offset changed from 1280 to 1344 (in bits) (by +64 bits)
+    'u8 uapsd_max_sp_len' offset changed from 1288 to 1352 (in bits) (by +64 bits)
+    'u8 max_nan_de_entries' offset changed from 1296 to 1360 (in bits) (by +64 bits)
+    'u8 tx_sk_pacing_shift' offset changed from 1304 to 1368 (in bits) (by +64 bits)
+    'u8 weight_multiplier' offset changed from 1312 to 1376 (in bits) (by +64 bits)
+    'u32 max_mtu' offset changed from 1344 to 1408 (in bits) (by +64 bits)
+    'const s8* tx_power_levels' offset changed from 1408 to 1472 (in bits) (by +64 bits)
+    'u8 max_txpwr_levels_idx' offset changed from 1472 to 1536 (in bits) (by +64 bits)
+```
+
+Reaches: `function const char* __ieee80211_create_tpt_led_trigger(ieee80211_hw*, unsigned int, const ieee80211_tpt_blink*, unsigned int)`, `function const char* __ieee80211_get_radio_led_name(ieee80211_hw*)`, `function void __ieee80211_schedule_txq(ieee80211_hw*, ieee80211_txq*, bool)`, `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function sk_buff* ieee80211_beacon_get_template(ieee80211_hw*, ieee80211_vif*, ieee80211_mutable_offsets*, unsigned int)`, `function ieee80211_ema_beacons* ieee80211_beacon_get_template_ema_list(ieee80211_hw*, ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_tim(ieee80211_hw*, ieee80211_vif*, u16*, u16*, unsigned int)`, `function u32 ieee80211_calc_rx_airtime(ieee80211_hw*, ieee80211_rx_status*, int)`, `function int ieee80211_emulate_add_chanctx(ieee80211_hw*, ieee80211_chanctx_conf*)`, `function void ieee80211_emulate_change_chanctx(ieee80211_hw*, ieee80211_chanctx_conf*, u32)`, `function void ieee80211_emulate_remove_chanctx(ieee80211_hw*, ieee80211_chanctx_conf*)`, `function int ieee80211_emulate_switch_vif_chanctx(ieee80211_hw*, ieee80211_vif_chanctx_switch*, int, ieee80211_chanctx_switch_mode)`, `function ieee80211_sta* ieee80211_find_sta_by_ifaddr(ieee80211_hw*, const u8*, const u8*)`, `function void ieee80211_free_hw(ieee80211_hw*)`, `function void ieee80211_free_txskb(ieee80211_hw*, sk_buff*)` … (+48 more)
+
+</details>
+
+<details><summary><code>struct cfg80211_bitrate_mask</code> (cfg80211.h:838:1)</summary>
+
+```
+  type size changed from 2880 to 4800 (in bits)
+  there are data member changes:
+    '__anonymous_struct__174 control[6]' size changed from 2880 to 4800 (in bits) (by +1920 bits)
+```
+
+Reaches: `function void __ieee80211_schedule_txq(ieee80211_hw*, ieee80211_txq*, bool)`, `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function bool ieee80211_beacon_cntdwn_is_complete(ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_template(ieee80211_hw*, ieee80211_vif*, ieee80211_mutable_offsets*, unsigned int)`, `function ieee80211_ema_beacons* ieee80211_beacon_get_template_ema_list(ieee80211_hw*, ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_tim(ieee80211_hw*, ieee80211_vif*, u16*, u16*, unsigned int)`, `function void ieee80211_beacon_loss(ieee80211_vif*)`, `function void ieee80211_beacon_set_cntdwn(ieee80211_vif*, u8)`, `function u8 ieee80211_beacon_update_cntdwn(ieee80211_vif*, unsigned int)`, `function void ieee80211_channel_switch_disconnect(ieee80211_vif*)`, `function void ieee80211_chswitch_done(ieee80211_vif*, bool, unsigned int)`, `function void ieee80211_color_change_finish(ieee80211_vif*, u8)`, `function void ieee80211_connection_loss(ieee80211_vif*)`, `function void ieee80211_cqm_beacon_loss_notify(ieee80211_vif*, gfp_t)`, `function void ieee80211_cqm_rssi_notify(ieee80211_vif*, nl80211_cqm_rssi_threshold_event, s32, gfp_t)` … (+62 more)
+
+</details>
+
+<details><summary><code>struct ieee80211_bss_conf</code> (mac80211.h:764:1)</summary>
+
+```
+  type size changed from 7104 to 9152 (in bits)
+  there are data member changes:
+    type 'struct ieee80211_chan_req' of 'ieee80211_bss_conf::chanreq' changed:
+      type size changed from 512 to 640 (in bits)
+      there are data member changes:
+        type 'struct cfg80211_chan_def' of 'ieee80211_chan_req::oper' changed, as reported earlier
+        type 'struct cfg80211_chan_def' of 'ieee80211_chan_req::ap' changed, as reported earlier
+        and offset changed from 256 to 320 (in bits) (by +64 bits)
+    'ieee80211_mu_group_data mu_group' offset changed from 1600 to 1728 (in bits) (by +128 bits)
+    'bool qos' offset changed from 1792 to 1920 (in bits) (by +128 bits)
+    'bool hidden_ssid' offset changed from 1800 to 1928 (in bits) (by +128 bits)
+    'int txpower' offset changed from 1824 to 1952 (in bits) (by +128 bits)
+    'nl80211_tx_power_setting txpower_type' offset changed from 1856 to 1984 (in bits) (by +128 bits)
+    'ieee80211_p2p_noa_attr p2p_noa_attr' offset changed from 1888 to 2016 (in bits) (by +128 bits)
+    'bool allow_p2p_go_ps' offset changed from 2320 to 2448 (in bits) (by +128 bits)
+    'u16 max_idle_period' offset changed from 2336 to 2464 (in bits) (by +128 bits)
+    'bool protected_keep_alive' offset changed from 2352 to 2480 (in bits) (by +128 bits)
+    'bool ftm_responder' offset changed from 2360 to 2488 (in bits) (by +128 bits)
+    'ieee80211_ftm_responder_params* ftmr_params' offset changed from 2368 to 2496 (in bits) (by +128 bits)
+    'bool nontransmitted' offset changed from 2432 to 2560 (in bits) (by +128 bits)
+    'ieee80211_bss_conf* tx_bss_conf' offset changed from 2496 to 2624 (in bits) (by +128 bits)
+    'u8 transmitter_bssid[6]' offset changed from 2560 to 2688 (in bits) (by +128 bits)
+    'u8 bssid_index' offset changed from 2608 to 2736 (in bits) (by +128 bits)
+    'u8 bssid_indicator' offset changed from 2616 to 2744 (in bits) (by +128 bits)
+    'bool ema_ap' offset changed from 2624 to 2752 (in bits) (by +128 bits)
+    'u8 profile_periodicity' offset changed from 2632 to 2760 (in bits) (by +128 bits)
+    'struct {u32 params; u16 nss_set;} he_oper' offset changed from 2656 to 2784 (in bits) (by +128 bits)
+    'ieee80211_he_obss_pd he_obss_pd' offset changed from 2720 to 2848 (in bits) (by +128 bits)
+    'cfg80211_he_bss_color he_bss_color' offset changed from 2888 to 3016 (in bits) (by +128 bits)
+    'ieee80211_fils_discovery fils_discovery' offset changed from 2912 to 3040 (in bits) (by +128 bits)
+    'u32 unsol_bcast_probe_resp_interval' offset changed from 2976 to 3104 (in bits) (by +128 bits)
+    type 'struct cfg80211_bitrate_mask' of 'ieee80211_bss_conf::beacon_tx_rate' changed, as reported earlier
+    and offset changed from 3008 to 3136 (in bits) (by +128 bits)
+    'ieee80211_ap_reg_power power_type' offset changed from 5888 to 7936 (in bits) (by +2048 bits)
+    'ieee80211_parsed_tpe tpe' offset changed from 5920 to 7968 (in bits) (by +2048 bits)
+    'u8 pwr_reduction' offset changed from 6752 to 8800 (in bits) (by +2048 bits)
+    'bool eht_support' offset changed from 6760 to 8808 (in bits) (by +2048 bits)
+    'bool epcs_support' offset changed from 6768 to 8816 (in bits) (by +2048 bits)
+    'bool csa_active' offset changed from 6776 to 8824 (in bits) (by +2048 bits)
+    'bool mu_mimo_owner' offset changed from 6784 to 8832 (in bits) (by +2048 bits)
+  ...
+```
+
+Reaches: `function void __ieee80211_schedule_txq(ieee80211_hw*, ieee80211_txq*, bool)`, `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function bool ieee80211_beacon_cntdwn_is_complete(ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_template(ieee80211_hw*, ieee80211_vif*, ieee80211_mutable_offsets*, unsigned int)`, `function ieee80211_ema_beacons* ieee80211_beacon_get_template_ema_list(ieee80211_hw*, ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_tim(ieee80211_hw*, ieee80211_vif*, u16*, u16*, unsigned int)`, `function void ieee80211_beacon_loss(ieee80211_vif*)`, `function void ieee80211_beacon_set_cntdwn(ieee80211_vif*, u8)`, `function u8 ieee80211_beacon_update_cntdwn(ieee80211_vif*, unsigned int)`, `function void ieee80211_channel_switch_disconnect(ieee80211_vif*)`, `function void ieee80211_chswitch_done(ieee80211_vif*, bool, unsigned int)`, `function void ieee80211_color_change_finish(ieee80211_vif*, u8)`, `function void ieee80211_connection_loss(ieee80211_vif*)`, `function void ieee80211_cqm_beacon_loss_notify(ieee80211_vif*, gfp_t)`, `function void ieee80211_cqm_rssi_notify(ieee80211_vif*, nl80211_cqm_rssi_threshold_event, s32, gfp_t)` … (+62 more)
+
+</details>
+
+<details><summary><code>struct ieee80211_vif</code> (mac80211.h:2038:1)</summary>
+
+```
+  type size changed from 9472 to 11520 (in bits)
+  there are data member changes:
+    type 'struct ieee80211_bss_conf' of 'ieee80211_vif::bss_conf' changed, as reported earlier
+    'ieee80211_bss_conf* link_conf[15]' offset changed from 7808 to 9856 (in bits) (by +2048 bits)
+    'u16 valid_links' offset changed from 8768 to 10816 (in bits) (by +2048 bits)
+    'u16 active_links' offset changed from 8784 to 10832 (in bits) (by +2048 bits)
+    'u16 dormant_links' offset changed from 8800 to 10848 (in bits) (by +2048 bits)
+    'u16 suspended_links' offset changed from 8816 to 10864 (in bits) (by +2048 bits)
+    'ieee80211_neg_ttlm neg_ttlm' offset changed from 8832 to 10880 (in bits) (by +2048 bits)
+    'u8 addr[6]' offset changed from 9104 to 11152 (in bits) (by +2048 bits)
+    'bool addr_valid' offset changed from 9152 to 11200 (in bits) (by +2048 bits)
+    'bool p2p' offset changed from 9160 to 11208 (in bits) (by +2048 bits)
+    'u8 cab_queue' offset changed from 9168 to 11216 (in bits) (by +2048 bits)
+    'u8 hw_queue[4]' offset changed from 9176 to 11224 (in bits) (by +2048 bits)
+    'ieee80211_txq* txq' offset changed from 9216 to 11264 (in bits) (by +2048 bits)
+    'netdev_features_t netdev_features' offset changed from 9280 to 11328 (in bits) (by +2048 bits)
+    'u32 driver_flags' offset changed from 9344 to 11392 (in bits) (by +2048 bits)
+    'u32 offload_flags' offset changed from 9376 to 11424 (in bits) (by +2048 bits)
+    'bool probe_req_reg' offset changed from 9408 to 11456 (in bits) (by +2048 bits)
+    'bool rx_mcast_action_reg' offset changed from 9416 to 11464 (in bits) (by +2048 bits)
+    'u8 drv_priv[]' offset changed from 9472 to 11520 (in bits) (by +2048 bits)
+```
+
+Reaches: `function void __ieee80211_schedule_txq(ieee80211_hw*, ieee80211_txq*, bool)`, `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function bool ieee80211_beacon_cntdwn_is_complete(ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_template(ieee80211_hw*, ieee80211_vif*, ieee80211_mutable_offsets*, unsigned int)`, `function ieee80211_ema_beacons* ieee80211_beacon_get_template_ema_list(ieee80211_hw*, ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_tim(ieee80211_hw*, ieee80211_vif*, u16*, u16*, unsigned int)`, `function void ieee80211_beacon_loss(ieee80211_vif*)`, `function void ieee80211_beacon_set_cntdwn(ieee80211_vif*, u8)`, `function u8 ieee80211_beacon_update_cntdwn(ieee80211_vif*, unsigned int)`, `function void ieee80211_channel_switch_disconnect(ieee80211_vif*)`, `function void ieee80211_chswitch_done(ieee80211_vif*, bool, unsigned int)`, `function void ieee80211_color_change_finish(ieee80211_vif*, u8)`, `function void ieee80211_connection_loss(ieee80211_vif*)`, `function void ieee80211_cqm_beacon_loss_notify(ieee80211_vif*, gfp_t)`, `function void ieee80211_cqm_rssi_notify(ieee80211_vif*, nl80211_cqm_rssi_threshold_event, s32, gfp_t)` … (+62 more)
+
+</details>
+
+<details><summary><code>struct ieee80211_chanctx_conf</code> (mac80211.h:263:1)</summary>
+
+```
+  type size changed from 832 to 1024 (in bits)
+  there are data member changes:
+    type 'struct cfg80211_chan_def' of 'ieee80211_chanctx_conf::def' changed, as reported earlier
+    type 'struct cfg80211_chan_def' of 'ieee80211_chanctx_conf::min_def' changed, as reported earlier
+    and offset changed from 256 to 320 (in bits) (by +64 bits)
+    type 'struct cfg80211_chan_def' of 'ieee80211_chanctx_conf::ap' changed, as reported earlier
+    and offset changed from 512 to 640 (in bits) (by +128 bits)
+    'int radio_idx' offset changed from 768 to 960 (in bits) (by +192 bits)
+    'u8 rx_chains_static' offset changed from 800 to 992 (in bits) (by +192 bits)
+    'u8 rx_chains_dynamic' offset changed from 808 to 1000 (in bits) (by +192 bits)
+    'bool radar_enabled' offset changed from 816 to 1008 (in bits) (by +192 bits)
+    'u8 drv_priv[]' offset changed from 832 to 1024 (in bits) (by +192 bits)
+```
+
+Reaches: `function void __ieee80211_schedule_txq(ieee80211_hw*, ieee80211_txq*, bool)`, `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function bool ieee80211_beacon_cntdwn_is_complete(ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_template(ieee80211_hw*, ieee80211_vif*, ieee80211_mutable_offsets*, unsigned int)`, `function ieee80211_ema_beacons* ieee80211_beacon_get_template_ema_list(ieee80211_hw*, ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_tim(ieee80211_hw*, ieee80211_vif*, u16*, u16*, unsigned int)`, `function void ieee80211_beacon_loss(ieee80211_vif*)`, `function void ieee80211_beacon_set_cntdwn(ieee80211_vif*, u8)`, `function u8 ieee80211_beacon_update_cntdwn(ieee80211_vif*, unsigned int)`, `function void ieee80211_channel_switch_disconnect(ieee80211_vif*)`, `function void ieee80211_chswitch_done(ieee80211_vif*, bool, unsigned int)`, `function void ieee80211_color_change_finish(ieee80211_vif*, u8)`, `function void ieee80211_connection_loss(ieee80211_vif*)`, `function void ieee80211_cqm_beacon_loss_notify(ieee80211_vif*, gfp_t)`, `function void ieee80211_cqm_rssi_notify(ieee80211_vif*, nl80211_cqm_rssi_threshold_event, s32, gfp_t)` … (+68 more)
 
 </details>
 
@@ -329,43 +878,97 @@ Reaches: `function int __register_virtio_driver(virtio_driver*, module*)`, `func
     'unsigned int eetlp_prefix_max' offset changed from 1474 to 1476 (in bits) (by +2 bits)
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `function int __pci_register_driver(pci_driver*, module*, const char*)`, `function agp_memory* agp_allocate_memory(agp_bridge_data*, size_t, u32)`, `function agp_bridge_data* agp_backend_acquire(pci_dev*)`, `function void agp_backend_release(agp_bridge_data*)`, `function int agp_bind_memory(agp_memory*, off_t)`, `function int agp_copy_info(agp_bridge_data*, agp_kern_info*)`, `function void agp_enable(agp_bridge_data*, u32)`, `function void agp_free_memory(agp_memory*)`, `function int agp_unbind_memory(agp_memory*)`, `function int aperture_remove_conflicting_pci_devices(pci_dev*, const char*)`, `function int intel_gmch_probe(pci_dev*, pci_dev*, agp_bridge_data*)`, `function int pci_alloc_irq_vectors(pci_dev*, unsigned int, unsigned int, unsigned int)`, `function void pci_assign_unassigned_bus_resources(pci_bus*)`, `function int pci_bus_alloc_resource(pci_bus*, resource*, resource_size_t, resource_size_t, resource_size_t, unsigned long int, resource_alignf, void*)` … (+67 more, see impacted.tsv)
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `function int __pci_register_driver(pci_driver*, module*, const char*)`, `function agp_memory* agp_allocate_memory(agp_bridge_data*, size_t, u32)`, `function agp_bridge_data* agp_backend_acquire(pci_dev*)`, `function void agp_backend_release(agp_bridge_data*)`, `function int agp_bind_memory(agp_memory*, off_t)`, `function int agp_copy_info(agp_bridge_data*, agp_kern_info*)`, `function void agp_enable(agp_bridge_data*, u32)`, `function void agp_free_memory(agp_memory*)`, `function int agp_unbind_memory(agp_memory*)`, `function int aperture_remove_conflicting_pci_devices(pci_dev*, const char*)`, `function int intel_gmch_probe(pci_dev*, pci_dev*, agp_bridge_data*)`, `function int pci_alloc_irq_vectors(pci_dev*, unsigned int, unsigned int, unsigned int)`, `function int pci_assign_resource(pci_dev*, int)`, `function void pci_assign_unassigned_bus_resources(pci_bus*)` … (+84 more)
 
 </details>
 
-<details><summary><code>enum bpf_arg_type</code> (bpf.h:784:1)</summary>
+<details><summary><code>struct cfg80211_chan_def</code> (cfg80211.h:825:1)</summary>
 
 ```
-  type size hasn't changed
-  1 enumerator change:
-    'bpf_arg_type::__BPF_ARG_TYPE_LIMIT' from value '134217727' to '268435455' at bpf.h:802:1
+  type size changed from 256 to 320 (in bits)
+  1 data member insertion:
+    'bool s1g_primary_2mhz', at offset 256 (in bits) at cfg80211.h:833:1
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `function const char* __ieee80211_create_tpt_led_trigger(ieee80211_hw*, unsigned int, const ieee80211_tpt_blink*, unsigned int)`, `function const char* __ieee80211_get_radio_led_name(ieee80211_hw*)`, `function void __ieee80211_schedule_txq(ieee80211_hw*, ieee80211_txq*, bool)`, `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function bool ieee80211_beacon_cntdwn_is_complete(ieee80211_vif*, unsigned int)`, `function void ieee80211_beacon_free_ema_list(ieee80211_ema_beacons*)`, `function sk_buff* ieee80211_beacon_get_template(ieee80211_hw*, ieee80211_vif*, ieee80211_mutable_offsets*, unsigned int)`, `function ieee80211_ema_beacons* ieee80211_beacon_get_template_ema_list(ieee80211_hw*, ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_tim(ieee80211_hw*, ieee80211_vif*, u16*, u16*, unsigned int)`, `function void ieee80211_beacon_loss(ieee80211_vif*)`, `function void ieee80211_beacon_set_cntdwn(ieee80211_vif*, u8)`, `function u8 ieee80211_beacon_update_cntdwn(ieee80211_vif*, unsigned int)`, `function u32 ieee80211_calc_rx_airtime(ieee80211_hw*, ieee80211_rx_status*, int)`, `function void ieee80211_channel_switch_disconnect(ieee80211_vif*)`, `function void ieee80211_chswitch_done(ieee80211_vif*, bool, unsigned int)` … (+96 more)
 
 </details>
 
-<details><summary><code>enum bpf_reg_type</code> (bpf.h:941:1)</summary>
+<details><summary><code>struct wiphy</code> (cfg80211.h:5851:1)</summary>
 
 ```
   type size hasn't changed
-  1 enumerator change:
-    'bpf_reg_type::__BPF_REG_TYPE_LIMIT' from value '134217727' to '268435455' at bpf.h:959:1
+  2 data member insertions:
+    'u32 bss_param_support', at offset 9632 (in bits) at cfg80211.h:6114:1
+    'wiphy_nan_capa nan_capa', at offset 9728 (in bits) at cfg80211.h:6118:1
+  there are data member changes:
+    'u32 bss_select_support' offset changed from 9632 to 9664 (in bits) (by +32 bits)
+    'u8 nan_supported_bands' offset changed from 9664 to 9696 (in bits) (by +32 bits)
+    'u32 txq_limit' offset changed from 9696 to 9824 (in bits) (by +128 bits)
+    'u32 txq_memory_limit' offset changed from 9728 to 9856 (in bits) (by +128 bits)
+    'u32 txq_quantum' offset changed from 9760 to 9888 (in bits) (by +128 bits)
+    'unsigned long int tx_queue_len' offset changed from 9792 to 9920 (in bits) (by +128 bits)
+    'u8 support_mbssid' offset changed from 9856 to 9984 (in bits) (by +128 bits)
+    'u8 support_only_he_mbssid' offset changed from 9857 to 9985 (in bits) (by +128 bits)
+    'const cfg80211_pmsr_capabilities* pmsr_capa' offset changed from 9920 to 10048 (in bits) (by +128 bits)
+    'struct {u64 peer; u64 vif; u8 max_retry;} tid_config_support' offset changed from 9984 to 10112 (in bits) (by +128 bits)
+    'u8 max_data_retry_count' offset changed from 10176 to 10304 (in bits) (by +128 bits)
+    'const cfg80211_sar_capa* sar_capa' offset changed from 10240 to 10368 (in bits) (by +128 bits)
+    'rfkill* rfkill' offset changed from 10304 to 10432 (in bits) (by +128 bits)
+    'u8 mbssid_max_interfaces' offset changed from 10368 to 10496 (in bits) (by +128 bits)
+    'u8 ema_max_profile_periodicity' offset changed from 10376 to 10504 (in bits) (by +128 bits)
+    'u16 max_num_akm_suites' offset changed from 10384 to 10512 (in bits) (by +128 bits)
+    'u16 hw_timestamp_max_peers' offset changed from 10400 to 10528 (in bits) (by +128 bits)
+    'int n_radio' offset changed from 10432 to 10560 (in bits) (by +128 bits)
+    'const wiphy_radio* radio' offset changed from 10496 to 10624 (in bits) (by +128 bits)
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `function const char* __ieee80211_create_tpt_led_trigger(ieee80211_hw*, unsigned int, const ieee80211_tpt_blink*, unsigned int)`, `function const char* __ieee80211_get_radio_led_name(ieee80211_hw*)`, `function void __ieee80211_schedule_txq(ieee80211_hw*, ieee80211_txq*, bool)`, `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function void ieee80211_beacon_free_ema_list(ieee80211_ema_beacons*)`, `function sk_buff* ieee80211_beacon_get_template(ieee80211_hw*, ieee80211_vif*, ieee80211_mutable_offsets*, unsigned int)`, `function ieee80211_ema_beacons* ieee80211_beacon_get_template_ema_list(ieee80211_hw*, ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_tim(ieee80211_hw*, ieee80211_vif*, u16*, u16*, unsigned int)`, `function u32 ieee80211_calc_rx_airtime(ieee80211_hw*, ieee80211_rx_status*, int)`, `function int ieee80211_emulate_add_chanctx(ieee80211_hw*, ieee80211_chanctx_conf*)`, `function void ieee80211_emulate_change_chanctx(ieee80211_hw*, ieee80211_chanctx_conf*, u32)`, `function void ieee80211_emulate_remove_chanctx(ieee80211_hw*, ieee80211_chanctx_conf*)`, `function int ieee80211_emulate_switch_vif_chanctx(ieee80211_hw*, ieee80211_vif_chanctx_switch*, int, ieee80211_chanctx_switch_mode)`, `function ieee80211_sta* ieee80211_find_sta_by_ifaddr(ieee80211_hw*, const u8*, const u8*)`, `function void ieee80211_free_hw(ieee80211_hw*)` … (+111 more)
 
 </details>
 
-<details><summary><code>enum bpf_return_type</code> (bpf.h:843:1)</summary>
+<details><summary><code>struct wireless_dev</code> (cfg80211.h:6459:1)</summary>
 
 ```
-  type size hasn't changed
-  1 enumerator change:
-    'bpf_return_type::__BPF_RET_TYPE_LIMIT' from value '134217727' to '268435455' at bpf.h:861:1
+  type size changed from 11840 to 12928 (in bits)
+  there are data member changes:
+    type 'union {struct {u8 connected_addr[6]; u8 ssid[32]; u8 ssid_len;} client; struct {int beacon_interval; cfg80211_chan_def preset_chandef; cfg80211_chan_def chandef; u8 id[32]; u8 id_len; u8 id_up_len;} mesh; struct {cfg80211_chan_def preset_chandef; u8 ssid[32]; u8 ssid_len;} ap; struct {cfg80211_internal_bss* current_bss; cfg80211_chan_def chandef; int beacon_interval; u8 ssid[32]; u8 ssid_len;} ibss; struct {cfg80211_chan_def chandef;} ocb;}' of 'wireless_dev::u' changed:
+      type size changed from 896 to 1024 (in bits)
+      1 data member insertion:
+        'struct {u8 cluster_id[6];} nan' at cfg80211.h:6777:1
+      there are data member changes:
+        type 'struct {cfg80211_chan_def preset_chandef; u8 ssid[32]; u8 ssid_len;}' of '__anonymous_union__111::ap' changed:
+          type size changed from 576 to 640 (in bits)
+          there are data member changes:
+            type 'struct cfg80211_chan_def' of '__anonymous_struct__122::preset_chandef' changed, as reported earlier
+            'u8 ssid[32]' offset changed from 256 to 320 (in bits) (by +64 bits)
+            'u8 ssid_len' offset changed from 512 to 576 (in bits) (by +64 bits)
+        type 'struct {cfg80211_internal_bss* current_bss; cfg80211_chan_def chandef; int beacon_interval; u8 ssid[32]; u8 ssid_len;}' of '__anonymous_union__111::ibss' changed:
+          type size changed from 640 to 704 (in bits)
+          there are data member changes:
+            type 'struct cfg80211_chan_def' of '__anonymous_struct__123::chandef' changed, as reported earlier
+            'int beacon_interval' offset changed from 320 to 384 (in bits) (by +64 bits)
+            'u8 ssid[32]' offset changed from 352 to 416 (in bits) (by +64 bits)
+            'u8 ssid_len' offset changed from 608 to 672 (in bits) (by +64 bits)
+        type 'struct {int beacon_interval; cfg80211_chan_def preset_chandef; cfg80211_chan_def chandef; u8 id[32]; u8 id_len; u8 id_up_len;}' of '__anonymous_union__111::mesh' changed:
+          type size changed from 896 to 1024 (in bits)
+          there are data member changes:
+            type 'struct cfg80211_chan_def' of '__anonymous_struct__121::preset_chandef' changed, as reported earlier
+            type 'struct cfg80211_chan_def' of '__anonymous_struct__121::chandef' changed, as reported earlier
+            and offset changed from 320 to 384 (in bits) (by +64 bits)
+            'u8 id[32]' offset changed from 576 to 704 (in bits) (by +128 bits)
+            'u8 id_len' offset changed from 832 to 960 (in bits) (by +128 bits)
+            'u8 id_up_len' offset changed from 840 to 968 (in bits) (by +128 bits)
+        type 'struct {cfg80211_chan_def chandef;}' of '__anonymous_union__111::ocb' changed:
+          type size changed from 256 to 320 (in bits)
+          there are data member changes:
+            type 'struct cfg80211_chan_def' of '__anonymous_struct__124::chandef' changed, as reported earlier
+    '__anonymous_struct__125 links[15]' offset changed from 3136 to 3264 (in bits) (by +128 bits), size changed from 8640 to 9600 (in bits) (by +960 bits)
+    'u16 valid_links' offset changed from 11776 to 12864 (in bits) (by +1088 bits)
+    'u32 radio_mask' offset changed from 11808 to 12896 (in bits) (by +1088 bits)
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `function const char* __ieee80211_create_tpt_led_trigger(ieee80211_hw*, unsigned int, const ieee80211_tpt_blink*, unsigned int)`, `function const char* __ieee80211_get_radio_led_name(ieee80211_hw*)`, `function void __ieee80211_schedule_txq(ieee80211_hw*, ieee80211_txq*, bool)`, `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function void ieee80211_beacon_free_ema_list(ieee80211_ema_beacons*)`, `function sk_buff* ieee80211_beacon_get_template(ieee80211_hw*, ieee80211_vif*, ieee80211_mutable_offsets*, unsigned int)`, `function ieee80211_ema_beacons* ieee80211_beacon_get_template_ema_list(ieee80211_hw*, ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_tim(ieee80211_hw*, ieee80211_vif*, u16*, u16*, unsigned int)`, `function u32 ieee80211_calc_rx_airtime(ieee80211_hw*, ieee80211_rx_status*, int)`, `function int ieee80211_emulate_add_chanctx(ieee80211_hw*, ieee80211_chanctx_conf*)`, `function void ieee80211_emulate_change_chanctx(ieee80211_hw*, ieee80211_chanctx_conf*, u32)`, `function void ieee80211_emulate_remove_chanctx(ieee80211_hw*, ieee80211_chanctx_conf*)`, `function int ieee80211_emulate_switch_vif_chanctx(ieee80211_hw*, ieee80211_vif_chanctx_switch*, int, ieee80211_chanctx_switch_mode)`, `function ieee80211_sta* ieee80211_find_sta_by_ifaddr(ieee80211_hw*, const u8*, const u8*)`, `function void ieee80211_free_hw(ieee80211_hw*)` … (+111 more)
 
 </details>
 
@@ -382,7 +985,7 @@ Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus
     and name of 'bio::bi_issue' changed to 'bio::issue_time_ns' at blk_types.h:242:1
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
 
 </details>
 
@@ -398,7 +1001,7 @@ Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus
     type 'typedef mempool_t' of 'bio_set::bvec_pool' changed, as reported earlier
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
 
 </details>
 
@@ -411,207 +1014,7 @@ Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus
       pointer type changed from: 'int (block_device*, hd_geometry*)*' to: 'int (gendisk*, hd_geometry*)*'
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct bpf_map</code> (bpf.h:290:1)</summary>
-
-```
-  type size changed from 1920 to 2240 (in bits)
-  2 data member insertions:
-    'u8 sha[32]', at offset 0 (in bits) at bpf.h:296:1
-    'char* excl_prog_sha', at offset 2176 (in bits) at bpf.h:337:1
-  there are data member changes:
-    'const bpf_map_ops* ops' offset changed from 0 to 256 (in bits) (by +256 bits)
-    'bpf_map* inner_map_meta' offset changed from 64 to 320 (in bits) (by +256 bits)
-    'void* security' offset changed from 128 to 384 (in bits) (by +256 bits)
-    'bpf_map_type map_type' offset changed from 192 to 448 (in bits) (by +256 bits)
-    'u32 key_size' offset changed from 224 to 480 (in bits) (by +256 bits)
-    'u32 value_size' offset changed from 256 to 512 (in bits) (by +256 bits)
-    'u32 max_entries' offset changed from 288 to 544 (in bits) (by +256 bits)
-    'u64 map_extra' offset changed from 320 to 576 (in bits) (by +256 bits)
-    'u32 map_flags' offset changed from 384 to 640 (in bits) (by +256 bits)
-    'u32 id' offset changed from 416 to 672 (in bits) (by +256 bits)
-    'btf_record* record' offset changed from 448 to 704 (in bits) (by +256 bits)
-    'int numa_node' offset changed from 512 to 768 (in bits) (by +256 bits)
-    'u32 btf_key_type_id' offset changed from 544 to 800 (in bits) (by +256 bits)
-    'u32 btf_value_type_id' offset changed from 576 to 832 (in bits) (by +256 bits)
-    'u32 btf_vmlinux_value_type_id' offset changed from 608 to 864 (in bits) (by +256 bits)
-    'btf* btf' offset changed from 640 to 896 (in bits) (by +256 bits)
-    'char name[16]' offset changed from 704 to 960 (in bits) (by +256 bits)
-    'mutex freeze_mutex' offset changed from 832 to 1088 (in bits) (by +256 bits)
-    'atomic64_t refcnt' offset changed from 1088 to 1344 (in bits) (by +256 bits)
-    'atomic64_t usercnt' offset changed from 1152 to 1408 (in bits) (by +256 bits)
-    anonymous data member 'union {work_struct work; callback_head rcu;}' offset changed from 1216 to 1472 (in bits) (by +256 bits)
-    'atomic64_t writecnt' offset changed from 1472 to 1728 (in bits) (by +256 bits)
-    'spinlock_t owner_lock' offset changed from 1536 to 1792 (in bits) (by +256 bits)
-    'bpf_map_owner* owner' offset changed from 1600 to 1856 (in bits) (by +256 bits)
-    'bool bypass_spec_v1' offset changed from 1664 to 1920 (in bits) (by +256 bits)
-    'bool frozen' offset changed from 1672 to 1928 (in bits) (by +256 bits)
-    'bool free_after_mult_rcu_gp' offset changed from 1680 to 1936 (in bits) (by +256 bits)
-    'bool free_after_rcu_gp' offset changed from 1688 to 1944 (in bits) (by +256 bits)
-    'atomic64_t sleepable_refcnt' offset changed from 1728 to 1984 (in bits) (by +256 bits)
-    's64* elem_count' offset changed from 1792 to 2048 (in bits) (by +256 bits)
-    'u64 cookie' offset changed from 1856 to 2112 (in bits) (by +256 bits)
-```
-
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct bpf_map_ops</code> (bpf.h:82:1)</summary>
-
-```
-  type size changed from 2752 to 2816 (in bits)
-  1 data member insertion:
-    'int (bpf_map*, typedef u32, void*)* map_get_hash', at offset 1216 (in bits) at bpf.h:113:1
-  there are data member changes:
-    'void* (bpf_map*, file*, int)* map_fd_get_ptr' offset changed from 1216 to 1280 (in bits) (by +64 bits)
-    'void (bpf_map*, void*, typedef bool)* map_fd_put_ptr' offset changed from 1280 to 1344 (in bits) (by +64 bits)
-    'int (bpf_map*, bpf_insn*)* map_gen_lookup' offset changed from 1344 to 1408 (in bits) (by +64 bits)
-    'typedef u32 (void*)* map_fd_sys_lookup_elem' offset changed from 1408 to 1472 (in bits) (by +64 bits)
-    'void (bpf_map*, void*, seq_file*)* map_seq_show_elem' offset changed from 1472 to 1536 (in bits) (by +64 bits)
-    'int (const bpf_map*, const btf*, const btf_type*, const btf_type*)* map_check_btf' offset changed from 1536 to 1600 (in bits) (by +64 bits)
-    'int (bpf_map*, bpf_prog_aux*)* map_poke_track' offset changed from 1600 to 1664 (in bits) (by +64 bits)
-    'void (bpf_map*, bpf_prog_aux*)* map_poke_untrack' offset changed from 1664 to 1728 (in bits) (by +64 bits)
-    'void (bpf_map*, typedef u32, bpf_prog*, bpf_prog*)* map_poke_run' offset changed from 1728 to 1792 (in bits) (by +64 bits)
-    'int (const bpf_map*, u64*, typedef u32)* map_direct_value_addr' offset changed from 1792 to 1856 (in bits) (by +64 bits)
-    'int (const bpf_map*, typedef u64, u32*)* map_direct_value_meta' offset changed from 1856 to 1920 (in bits) (by +64 bits)
-    'int (bpf_map*, vm_area_struct*)* map_mmap' offset changed from 1920 to 1984 (in bits) (by +64 bits)
-    'typedef __poll_t (bpf_map*, file*, poll_table_struct*)* map_poll' offset changed from 1984 to 2048 (in bits) (by +64 bits)
-    'unsigned long int (file*, unsigned long int, unsigned long int, unsigned long int, unsigned long int)* map_get_unmapped_area' offset changed from 2048 to 2112 (in bits) (by +64 bits)
-    'int (bpf_local_storage_map*, void*, typedef u32)* map_local_storage_charge' offset changed from 2112 to 2176 (in bits) (by +64 bits)
-    'void (bpf_local_storage_map*, void*, typedef u32)* map_local_storage_uncharge' offset changed from 2176 to 2240 (in bits) (by +64 bits)
-    'bpf_local_storage** (void*)* map_owner_storage_ptr' offset changed from 2240 to 2304 (in bits) (by +64 bits)
-    'long int (bpf_map*, typedef u64, typedef u64)* map_redirect' offset changed from 2304 to 2368 (in bits) (by +64 bits)
-    'typedef bool (const bpf_map*, const bpf_map*)* map_meta_equal' offset changed from 2368 to 2432 (in bits) (by +64 bits)
-    'int (bpf_verifier_env*, bpf_func_state*, bpf_func_state*)* map_set_for_each_callback_args' offset changed from 2432 to 2496 (in bits) (by +64 bits)
-    'long int (bpf_map*, typedef bpf_callback_t, void*, typedef u64)* map_for_each_callback' offset changed from 2496 to 2560 (in bits) (by +64 bits)
-    'typedef u64 (const bpf_map*)* map_mem_usage' offset changed from 2560 to 2624 (in bits) (by +64 bits)
-    'int* map_btf_id' offset changed from 2624 to 2688 (in bits) (by +64 bits)
-    'const bpf_iter_seq_info* iter_seq_info' offset changed from 2688 to 2752 (in bits) (by +64 bits)
-```
-
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct bpf_map_owner</code> (bpf.h:282:1)</summary>
-
-```
-  type size changed from 256 to 320 (in bits)
-  1 data member insertion:
-    'bpf_attach_type expected_attach_type', at offset 256 (in bits) at bpf.h:292:1
-```
-
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct bpf_offloaded_map</code> (bpf.h:619:1)</summary>
-
-```
-  type size changed from 2240 to 2560 (in bits)
-  there are data member changes:
-    type 'struct bpf_map' of 'bpf_offloaded_map::map' changed, as reported earlier
-    'net_device* netdev' offset changed from 1920 to 2240 (in bits) (by +320 bits)
-    'const bpf_map_dev_ops* dev_ops' offset changed from 1984 to 2304 (in bits) (by +320 bits)
-    'void* dev_priv' offset changed from 2048 to 2368 (in bits) (by +320 bits)
-    'list_head offloads' offset changed from 2112 to 2432 (in bits) (by +320 bits)
-```
-
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct bpf_prog</code> (bpf.h:1693:1)</summary>
-
-```
-  type size changed from 576 to 768 (in bits)
-  there are data member changes:
-    data member u8 tag[8] at offset 160 (in bits) became anonymous data member 'union {u8 digest[32]; u8 tag[8];}'
-    and size changed from 64 to 256 (in bits) (by +192 bits)
-    'bpf_prog_stats* stats' offset changed from 256 to 448 (in bits) (by +192 bits)
-    'int* active' offset changed from 320 to 512 (in bits) (by +192 bits)
-    'unsigned int (void*, const bpf_insn*)* bpf_func' offset changed from 384 to 576 (in bits) (by +192 bits)
-    'bpf_prog_aux* aux' offset changed from 448 to 640 (in bits) (by +192 bits)
-    'sock_fprog_kern* orig_prog' offset changed from 512 to 704 (in bits) (by +192 bits)
-    anonymous data member 'union {struct {struct {} __empty_insns; sock_filter insns[];}; struct {struct {} __empty_insnsi; bpf_insn insnsi[];};}' offset changed from 576 to 768 (in bits) (by +192 bits)
-```
-
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct bpf_prog_aux</code> (bpf.h:1582:1)</summary>
-
-```
-  type size changed from 10304 to 10368 (in bits)
-  2 data member insertions:
-    'bool kprobe_write_ctx', at offset 1336 (in bits) at bpf.h:1642:1
-    'bpf_prog_aux* main_prog_aux', at offset 1984 (in bits) at bpf.h:1652:1
-  there are data member changes:
-    'void* jit_data' offset changed from 1984 to 2048 (in bits) (by +64 bits)
-    'bpf_jit_poke_descriptor* poke_tab' offset changed from 2048 to 2112 (in bits) (by +64 bits)
-    'bpf_kfunc_desc_tab* kfunc_tab' offset changed from 2112 to 2176 (in bits) (by +64 bits)
-    'bpf_kfunc_btf_tab* kfunc_btf_tab' offset changed from 2176 to 2240 (in bits) (by +64 bits)
-    'u32 size_poke_tab' offset changed from 2240 to 2304 (in bits) (by +64 bits)
-    'bpf_ksym ksym' offset changed from 2304 to 2368 (in bits) (by +64 bits)
-    'const bpf_prog_ops* ops' offset changed from 7104 to 7168 (in bits) (by +64 bits)
-    'const bpf_struct_ops* st_ops' offset changed from 7168 to 7232 (in bits) (by +64 bits)
-    'bpf_map** used_maps' offset changed from 7232 to 7296 (in bits) (by +64 bits)
-    'mutex used_maps_mutex' offset changed from 7296 to 7360 (in bits) (by +64 bits)
-    'btf_mod_pair* used_btfs' offset changed from 7552 to 7616 (in bits) (by +64 bits)
-    'bpf_prog* prog' offset changed from 7616 to 7680 (in bits) (by +64 bits)
-    'user_struct* user' offset changed from 7680 to 7744 (in bits) (by +64 bits)
-    'u64 load_time' offset changed from 7744 to 7808 (in bits) (by +64 bits)
-    'u32 verified_insns' offset changed from 7808 to 7872 (in bits) (by +64 bits)
-    'int cgroup_atype' offset changed from 7840 to 7904 (in bits) (by +64 bits)
-    'bpf_map* cgroup_storage[2]' offset changed from 7872 to 7936 (in bits) (by +64 bits)
-    'char name[16]' offset changed from 8000 to 8064 (in bits) (by +64 bits)
-    'typedef u64 (typedef u64, typedef u64, typedef u64, typedef u64, typedef u64)* bpf_exception_cb' offset changed from 8128 to 8192 (in bits) (by +64 bits)
-    'void* security' offset changed from 8192 to 8256 (in bits) (by +64 bits)
-    'bpf_token* token' offset changed from 8256 to 8320 (in bits) (by +64 bits)
-    'bpf_prog_offload* offload' offset changed from 8320 to 8384 (in bits) (by +64 bits)
-    'btf* btf' offset changed from 8384 to 8448 (in bits) (by +64 bits)
-    'bpf_func_info* func_info' offset changed from 8448 to 8512 (in bits) (by +64 bits)
-    'bpf_func_info_aux* func_info_aux' offset changed from 8512 to 8576 (in bits) (by +64 bits)
-    'bpf_line_info* linfo' offset changed from 8576 to 8640 (in bits) (by +64 bits)
-    'void** jited_linfo' offset changed from 8640 to 8704 (in bits) (by +64 bits)
-    'u32 func_info_cnt' offset changed from 8704 to 8768 (in bits) (by +64 bits)
-    'u32 nr_linfo' offset changed from 8736 to 8800 (in bits) (by +64 bits)
-    'u32 linfo_idx' offset changed from 8768 to 8832 (in bits) (by +64 bits)
-    'module* mod' offset changed from 8832 to 8896 (in bits) (by +64 bits)
-    'u32 num_exentries' offset changed from 8896 to 8960 (in bits) (by +64 bits)
-    'exception_table_entry* extable' offset changed from 8960 to 9024 (in bits) (by +64 bits)
-    anonymous data member 'union {work_struct work; callback_head rcu;}' offset changed from 9024 to 9088 (in bits) (by +64 bits)
-    'bpf_stream stream[2]' offset changed from 9280 to 9344 (in bits) (by +64 bits)
-```
-
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct btf_record</code> (bpf.h:254:1)</summary>
-
-```
-  type size hasn't changed
-  1 data member insertion:
-    'int task_work_off', at offset 224 (in bits) at bpf.h:265:1
-```
-
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct dst_entry</code> (dst.h:26:1)</summary>
-
-```
-  type size hasn't changed
-```
-
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
 
 </details>
 
@@ -623,7 +1026,7 @@ Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus
     type 'struct bio_set' of 'gendisk::bio_split' changed, as reported earlier
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
 
 </details>
 
@@ -659,7 +1062,7 @@ Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus
     'kmem_cache_node* node[64]' offset changed from 1536 to 1600 (in bits) (by +64 bits)
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
 
 </details>
 
@@ -677,7 +1080,7 @@ Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus
           'u8 acquired', at offset 0 (in bits) at local_lock_internal.h:24:1
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
 
 </details>
 
@@ -689,7 +1092,7 @@ Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus
     'node_barn* barn', at offset 512 (in bits) at slub.c:499:1
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
 
 </details>
 
@@ -719,7 +1122,7 @@ Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus
     'refcount_t passive' offset changed from 1472 to 1536 (in bits) (by +64 bits)
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
 
 </details>
 
@@ -736,7 +1139,7 @@ Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus
     and name of 'mount::mnt_instance' changed to 'mount::mnt_next_for_sb' at mount.h:61:1
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
 
 </details>
 
@@ -750,7 +1153,287 @@ Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus
     'int (irq_domain*, irq_fwspec*, irq_hw_number_t*, unsigned int*)* msi_translate' offset changed from 640 to 576 (in bits) (by -64 bits)
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
+
+</details>
+
+<details><summary><code>struct netdev_queue_mgmt_ops</code> (netdev_queues.h:134:1)</summary>
+
+```
+  type size changed from 320 to 384 (in bits)
+  1 data member insertion:
+    'device* (net_device*, int)* ndo_queue_get_dma_dev', at offset 320 (in bits) at netdev_queues.h:150:1
+```
+
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
+
+</details>
+
+<details><summary><code>struct netpoll_info</code> (netpoll.h:49:1)</summary>
+
+```
+  type size changed from 1344 to 1280 (in bits)
+  1 data member deletion:
+    'netpoll* netpoll', at offset 1152 (in bits) at netpoll.h:58:1
+  there are data member changes:
+    'callback_head rcu' offset changed from 1216 to 1152 (in bits) (by -64 bits)
+```
+
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
+
+</details>
+
+<details><summary><code>struct per_cpu_nodestat</code> (mmzone.h:762:1)</summary>
+
+```
+  type size changed from 384 to 392 (in bits)
+  there are data member changes:
+    type 's8[47]' of 'per_cpu_nodestat::vm_node_stat_diff' changed:
+      type name changed from 's8[47]' to 's8[48]'
+      array type size changed from 376 to 384
+      array type subrange 1 changed length from 47 to 48
+```
+
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
+
+</details>
+
+<details><summary><code>struct perf_buffer</code> (internal.h:13:1)</summary>
+
+```
+  type size hasn't changed
+  there are data member changes:
+    type 'typedef atomic_t' of 'perf_buffer::mmap_count' changed:
+      typedef name changed from atomic_t to refcount_t at refcount_types.h:17:1
+      underlying type 'struct atomic_t' at types.h:181:1 changed:
+        type name changed from 'atomic_t' to 'refcount_struct'
+        type size hasn't changed
+        there are data member changes:
+          type 'int' of 'atomic_t::counter' changed:
+            entity changed from 'int' to 'typedef atomic_t' at types.h:183:1
+            type size hasn't changed
+          and name of 'atomic_t::counter' changed to 'refcount_struct::refs' at refcount_types.h:16:1
+    type 'typedef atomic_t' of 'perf_buffer::aux_mmap_count' changed, as reported earlier
+```
+
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
+
+</details>
+
+<details><summary><code>struct pglist_data</code> (mmzone.h:1360:1)</summary>
+
+```
+  type size hasn't changed
+  there are data member changes:
+    type 'int' of 'pglist_data::kswapd_failures' changed:
+      entity changed from 'int' to 'typedef atomic_t' at types.h:183:1
+      type size hasn't changed
+    type 'atomic_long_t[47]' of 'pglist_data::vm_stat' changed:
+      type name changed from 'atomic_long_t[47]' to 'atomic_long_t[48]'
+      array type size changed from 3008 to 3072
+      array type subrange 1 changed length from 47 to 48
+    'memory_tier* memtier' offset changed from 112128 to 112192 (in bits) (by +64 bits)
+```
+
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
+
+</details>
+
+<details><summary><code>struct proc_ns_operations</code> (proc_ns.h:17:1)</summary>
+
+```
+  type size changed from 512 to 448 (in bits)
+  1 data member deletion:
+    'int type', at offset 128 (in bits) at proc_ns.h:20:1
+  there are data member changes:
+    'ns_common* (task_struct*)* get' offset changed from 192 to 128 (in bits) (by -64 bits)
+    'void (ns_common*)* put' offset changed from 256 to 192 (in bits) (by -64 bits)
+    'int (nsset*, ns_common*)* install' offset changed from 320 to 256 (in bits) (by -64 bits)
+    'user_namespace* (ns_common*)* owner' offset changed from 384 to 320 (in bits) (by -64 bits)
+    'ns_common* (ns_common*)* get_parent' offset changed from 448 to 384 (in bits) (by -64 bits)
+```
+
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
+
+</details>
+
+<details><summary><code>struct rps_dev_flow</code> (rps.h:31:1)</summary>
+
+```
+  type size changed from 64 to 96 (in bits)
+  1 data member insertion:
+    'u32 hash', at offset 64 (in bits) at rps.h:36:1
+```
+
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
+
+</details>
+
+<details><summary><code>struct rt6_info</code> (ip6_fib.h:207:1)</summary>
+
+```
+  type size hasn't changed
+  there are data member changes:
+    type 'struct dst_entry' of 'rt6_info::dst' changed, as reported earlier
+```
+
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
+
+</details>
+
+<details><summary><code>struct rtable</code> (route.h:57:1)</summary>
+
+```
+  type size hasn't changed
+  there are data member changes:
+    type 'struct dst_entry' of 'rtable::dst' changed, as reported earlier
+```
+
+Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+596 more)
+
+</details>
+
+<details><summary><code>struct perf_event</code> (perf_event.h:764:1)</summary>
+
+```
+  type size hasn't changed
+  there are data member changes:
+    type 'typedef atomic_t' of 'perf_event::mmap_count' changed:
+      typedef name changed from atomic_t to refcount_t at refcount_types.h:17:1
+      underlying type 'struct atomic_t' at types.h:181:1 changed:
+        type name changed from 'atomic_t' to 'refcount_struct'
+        type size hasn't changed
+        there are data member changes:
+          type 'int' of 'atomic_t::counter' changed:
+            entity changed from 'int' to 'typedef atomic_t' at types.h:183:1
+            type size hasn't changed
+          and name of 'atomic_t::counter' changed to 'refcount_struct::refs' at refcount_types.h:16:1
+```
+
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+611 more)
+
+</details>
+
+<details><summary><code>struct trace_iterator</code> (trace_events.h:96:1)</summary>
+
+```
+  type size changed from 132736 to 132608 (in bits)
+  there are data member changes:
+    type 'struct trace_seq' of 'trace_iterator::tmp_seq' changed:
+      type size changed from 65600 to 65536 (in bits)
+      there are data member changes:
+        'char buffer[8156]' offset changed from 0 to 288 (in bits) (by +288 bits)
+        'seq_buf seq' offset changed from 65280 to 0 (in bits) (by -65280 bits)
+        'size_t readpos' offset changed from 65472 to 192 (in bits) (by -65280 bits)
+        'int full' offset changed from 65536 to 256 (in bits) (by -65280 bits)
+    'cpumask_var_t started' offset changed from 66560 to 66496 (in bits) (by -64 bits)
+    'bool closed' offset changed from 66624 to 66560 (in bits) (by -64 bits)
+    'bool snapshot' offset changed from 66632 to 66568 (in bits) (by -64 bits)
+    type 'struct trace_seq' of 'trace_iterator::seq' changed, as reported earlier
+    and offset changed from 66688 to 66624 (in bits) (by -64 bits)
+    'trace_entry* ent' offset changed from 132288 to 132160 (in bits) (by -128 bits)
+    'unsigned long int lost_events' offset changed from 132352 to 132224 (in bits) (by -128 bits)
+    'int leftover' offset changed from 132416 to 132288 (in bits) (by -128 bits)
+    'int ent_size' offset changed from 132448 to 132320 (in bits) (by -128 bits)
+    'int cpu' offset changed from 132480 to 132352 (in bits) (by -128 bits)
+    'u64 ts' offset changed from 132544 to 132416 (in bits) (by -128 bits)
+    'loff_t pos' offset changed from 132608 to 132480 (in bits) (by -128 bits)
+    'long int idx' offset changed from 132672 to 132544 (in bits) (by -128 bits)
+```
+
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+613 more)
+
+</details>
+
+<details><summary><code>struct pid_namespace</code> (pid_namespace.h:26:1)</summary>
+
+```
+  type size changed from 2304 to 2752 (in bits)
+  there are data member changes:
+    type 'struct ns_common' of 'pid_namespace::ns' changed, as reported earlier
+    'work_struct work' offset changed from 1088 to 1536 (in bits) (by +448 bits)
+    'ctl_table_set set' offset changed from 1344 to 1792 (in bits) (by +448 bits)
+    'ctl_table_header* sysctls' offset changed from 2176 to 2624 (in bits) (by +448 bits)
+    'int memfd_noexec_scope' offset changed from 2240 to 2688 (in bits) (by +448 bits)
+```
+
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+615 more)
+
+</details>
+
+<details><summary><code>struct ethtool_ops</code> (ethtool.h:1097:1)</summary>
+
+```
+  type size changed from 5184 to 5248 (in bits)
+  1 data member insertion:
+    'typedef u32 (net_device*)* get_rx_ring_count', at offset 2432 (in bits) at ethtool.h:1188:1
+  there are data member changes:
+    'typedef u32 (net_device*)* get_rxfh_key_size' offset changed from 2432 to 2496 (in bits) (by +64 bits)
+    'typedef u32 (net_device*)* get_rxfh_indir_size' offset changed from 2496 to 2560 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_rxfh_param*)* get_rxfh' offset changed from 2560 to 2624 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_rxfh_param*, netlink_ext_ack*)* set_rxfh' offset changed from 2624 to 2688 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_rxfh_fields*)* get_rxfh_fields' offset changed from 2688 to 2752 (in bits) (by +64 bits)
+    'int (net_device*, const ethtool_rxfh_fields*, netlink_ext_ack*)* set_rxfh_fields' offset changed from 2752 to 2816 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_rxfh_context*, const ethtool_rxfh_param*, netlink_ext_ack*)* create_rxfh_context' offset changed from 2816 to 2880 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_rxfh_context*, const ethtool_rxfh_param*, netlink_ext_ack*)* modify_rxfh_context' offset changed from 2880 to 2944 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_rxfh_context*, typedef u32, netlink_ext_ack*)* remove_rxfh_context' offset changed from 2944 to 3008 (in bits) (by +64 bits)
+    'void (net_device*, ethtool_channels*)* get_channels' offset changed from 3008 to 3072 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_channels*)* set_channels' offset changed from 3072 to 3136 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_dump*)* get_dump_flag' offset changed from 3136 to 3200 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_dump*, void*)* get_dump_data' offset changed from 3200 to 3264 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_dump*)* set_dump' offset changed from 3264 to 3328 (in bits) (by +64 bits)
+    'int (net_device*, kernel_ethtool_ts_info*)* get_ts_info' offset changed from 3328 to 3392 (in bits) (by +64 bits)
+    'void (net_device*, ethtool_ts_stats*)* get_ts_stats' offset changed from 3392 to 3456 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_modinfo*)* get_module_info' offset changed from 3456 to 3520 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_eeprom*, u8*)* get_module_eeprom' offset changed from 3520 to 3584 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_keee*)* get_eee' offset changed from 3584 to 3648 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_keee*)* set_eee' offset changed from 3648 to 3712 (in bits) (by +64 bits)
+    'int (net_device*, const ethtool_tunable*, void*)* get_tunable' offset changed from 3712 to 3776 (in bits) (by +64 bits)
+    'int (net_device*, const ethtool_tunable*, void*)* set_tunable' offset changed from 3776 to 3840 (in bits) (by +64 bits)
+    'int (net_device*, typedef u32, ethtool_coalesce*)* get_per_queue_coalesce' offset changed from 3840 to 3904 (in bits) (by +64 bits)
+    'int (net_device*, typedef u32, ethtool_coalesce*)* set_per_queue_coalesce' offset changed from 3904 to 3968 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_link_ksettings*)* get_link_ksettings' offset changed from 3968 to 4032 (in bits) (by +64 bits)
+    'int (net_device*, const ethtool_link_ksettings*)* set_link_ksettings' offset changed from 4032 to 4096 (in bits) (by +64 bits)
+    type 'void (net_device*, ethtool_fec_stats*)*' of 'ethtool_ops::get_fec_stats' changed:
+      pointer type changed from: 'void (net_device*, ethtool_fec_stats*)*' to: 'void (net_device*, ethtool_fec_stats*, ethtool_fec_hist*)*'
+    and offset changed from 4096 to 4160 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_fecparam*)* get_fecparam' offset changed from 4160 to 4224 (in bits) (by +64 bits)
+    'int (net_device*, ethtool_fecparam*)* set_fecparam' offset changed from 4224 to 4288 (in bits) (by +64 bits)
+    'void (net_device*, ethtool_stats*, u64*)* get_ethtool_phy_stats' offset changed from 4288 to 4352 (in bits) (by +64 bits)
+    'int (net_device*, const ethtool_tunable*, void*)* get_phy_tunable' offset changed from 4352 to 4416 (in bits) (by +64 bits)
+    'int (net_device*, const ethtool_tunable*, void*)* set_phy_tunable' offset changed from 4416 to 4480 (in bits) (by +64 bits)
+    'int (net_device*, const ethtool_module_eeprom*, netlink_ext_ack*)* get_module_eeprom_by_page' offset changed from 4480 to 4544 (in bits) (by +64 bits)
+    'int (net_device*, const ethtool_module_eeprom*, netlink_ext_ack*)* set_module_eeprom_by_page' offset changed from 4544 to 4608 (in bits) (by +64 bits)
+  ...
+```
+
+Reaches: `function const char* __ieee80211_create_tpt_led_trigger(ieee80211_hw*, unsigned int, const ieee80211_tpt_blink*, unsigned int)`, `function const char* __ieee80211_get_radio_led_name(ieee80211_hw*)`, `function void __ieee80211_schedule_txq(ieee80211_hw*, ieee80211_txq*, bool)`, `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function void ieee80211_beacon_free_ema_list(ieee80211_ema_beacons*)`, `function sk_buff* ieee80211_beacon_get_template(ieee80211_hw*, ieee80211_vif*, ieee80211_mutable_offsets*, unsigned int)`, `function ieee80211_ema_beacons* ieee80211_beacon_get_template_ema_list(ieee80211_hw*, ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_tim(ieee80211_hw*, ieee80211_vif*, u16*, u16*, unsigned int)`, `function u32 ieee80211_calc_rx_airtime(ieee80211_hw*, ieee80211_rx_status*, int)`, `function int ieee80211_emulate_add_chanctx(ieee80211_hw*, ieee80211_chanctx_conf*)`, `function void ieee80211_emulate_change_chanctx(ieee80211_hw*, ieee80211_chanctx_conf*, u32)`, `function void ieee80211_emulate_remove_chanctx(ieee80211_hw*, ieee80211_chanctx_conf*)`, `function int ieee80211_emulate_switch_vif_chanctx(ieee80211_hw*, ieee80211_vif_chanctx_switch*, int, ieee80211_chanctx_switch_mode)`, `function ieee80211_sta* ieee80211_find_sta_by_ifaddr(ieee80211_hw*, const u8*, const u8*)`, `function void ieee80211_free_hw(ieee80211_hw*)` … (+722 more)
+
+</details>
+
+<details><summary><code>struct bpf_offloaded_map</code> (bpf.h:619:1)</summary>
+
+```
+  type size changed from 2240 to 2560 (in bits)
+  there are data member changes:
+    type 'struct bpf_map' of 'bpf_offloaded_map::map' changed, as reported earlier
+    'net_device* netdev' offset changed from 1920 to 2240 (in bits) (by +320 bits)
+    'const bpf_map_dev_ops* dev_ops' offset changed from 1984 to 2304 (in bits) (by +320 bits)
+    'void* dev_priv' offset changed from 2048 to 2368 (in bits) (by +320 bits)
+    'list_head offloads' offset changed from 2112 to 2432 (in bits) (by +320 bits)
+```
+
+Reaches: `function int qmi_add_lookup(qmi_handle*, unsigned int, unsigned int, unsigned int)`, `function int qmi_handle_init(qmi_handle*, size_t, const qmi_ops*, const qmi_msg_handler*)`, `function void qmi_handle_release(qmi_handle*)`, `function ssize_t qmi_send_request(qmi_handle*, sockaddr_qrtr*, qmi_txn*, int, size_t, const qmi_elem_info*, void*)`, `function void qmi_txn_cancel(qmi_txn*)`, `function int qmi_txn_init(qmi_handle*, qmi_txn*, const qmi_elem_info*, void*)`, `function int qmi_txn_wait(qmi_txn*, unsigned long int)`, `function const char* __ieee80211_create_tpt_led_trigger(ieee80211_hw*, unsigned int, const ieee80211_tpt_blink*, unsigned int)`, `function const char* __ieee80211_get_radio_led_name(ieee80211_hw*)`, `function void __ieee80211_schedule_txq(ieee80211_hw*, ieee80211_txq*, bool)`, `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function void ieee80211_beacon_free_ema_list(ieee80211_ema_beacons*)`, `function sk_buff* ieee80211_beacon_get_template(ieee80211_hw*, ieee80211_vif*, ieee80211_mutable_offsets*, unsigned int)`, `function ieee80211_ema_beacons* ieee80211_beacon_get_template_ema_list(ieee80211_hw*, ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_tim(ieee80211_hw*, ieee80211_vif*, u16*, u16*, unsigned int)` … (+729 more)
+
+</details>
+
+<details><summary><code>struct dst_entry</code> (dst.h:26:1)</summary>
+
+```
+  type size hasn't changed
+```
+
+Reaches: `function int qmi_add_lookup(qmi_handle*, unsigned int, unsigned int, unsigned int)`, `function int qmi_handle_init(qmi_handle*, size_t, const qmi_ops*, const qmi_msg_handler*)`, `function void qmi_handle_release(qmi_handle*)`, `function ssize_t qmi_send_request(qmi_handle*, sockaddr_qrtr*, qmi_txn*, int, size_t, const qmi_elem_info*, void*)`, `function void qmi_txn_cancel(qmi_txn*)`, `function int qmi_txn_init(qmi_handle*, qmi_txn*, const qmi_elem_info*, void*)`, `function int qmi_txn_wait(qmi_txn*, unsigned long int)`, `function const char* __ieee80211_create_tpt_led_trigger(ieee80211_hw*, unsigned int, const ieee80211_tpt_blink*, unsigned int)`, `function const char* __ieee80211_get_radio_led_name(ieee80211_hw*)`, `function void __ieee80211_schedule_txq(ieee80211_hw*, ieee80211_txq*, bool)`, `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function void ieee80211_beacon_free_ema_list(ieee80211_ema_beacons*)`, `function sk_buff* ieee80211_beacon_get_template(ieee80211_hw*, ieee80211_vif*, ieee80211_mutable_offsets*, unsigned int)`, `function ieee80211_ema_beacons* ieee80211_beacon_get_template_ema_list(ieee80211_hw*, ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_tim(ieee80211_hw*, ieee80211_vif*, u16*, u16*, unsigned int)` … (+729 more)
 
 </details>
 
@@ -800,93 +1483,7 @@ Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus
   ...
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct per_cpu_nodestat</code> (mmzone.h:762:1)</summary>
-
-```
-  type size changed from 384 to 392 (in bits)
-  there are data member changes:
-    type 's8[47]' of 'per_cpu_nodestat::vm_node_stat_diff' changed:
-      type name changed from 's8[47]' to 's8[48]'
-      array type size changed from 376 to 384
-      array type subrange 1 changed length from 47 to 48
-```
-
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct perf_buffer</code> (internal.h:13:1)</summary>
-
-```
-  type size hasn't changed
-  there are data member changes:
-    type 'typedef atomic_t' of 'perf_buffer::mmap_count' changed:
-      typedef name changed from atomic_t to refcount_t at refcount_types.h:17:1
-      underlying type 'struct atomic_t' at types.h:181:1 changed:
-        type name changed from 'atomic_t' to 'refcount_struct'
-        type size hasn't changed
-        there are data member changes:
-          type 'int' of 'atomic_t::counter' changed:
-            entity changed from 'int' to 'typedef atomic_t' at types.h:183:1
-            type size hasn't changed
-          and name of 'atomic_t::counter' changed to 'refcount_struct::refs' at refcount_types.h:16:1
-    type 'typedef atomic_t' of 'perf_buffer::aux_mmap_count' changed, as reported earlier
-```
-
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct perf_event</code> (perf_event.h:764:1)</summary>
-
-```
-  type size hasn't changed
-  there are data member changes:
-    type 'typedef atomic_t' of 'perf_event::mmap_count' changed, as reported earlier
-```
-
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct pglist_data</code> (mmzone.h:1360:1)</summary>
-
-```
-  type size hasn't changed
-  there are data member changes:
-    type 'int' of 'pglist_data::kswapd_failures' changed:
-      entity changed from 'int' to 'typedef atomic_t' at types.h:183:1
-      type size hasn't changed
-    type 'atomic_long_t[47]' of 'pglist_data::vm_stat' changed:
-      type name changed from 'atomic_long_t[47]' to 'atomic_long_t[48]'
-      array type size changed from 3008 to 3072
-      array type subrange 1 changed length from 47 to 48
-    'memory_tier* memtier' offset changed from 112128 to 112192 (in bits) (by +64 bits)
-```
-
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct proc_ns_operations</code> (proc_ns.h:17:1)</summary>
-
-```
-  type size changed from 512 to 448 (in bits)
-  1 data member deletion:
-    'int type', at offset 128 (in bits) at proc_ns.h:20:1
-  there are data member changes:
-    'ns_common* (task_struct*)* get' offset changed from 192 to 128 (in bits) (by -64 bits)
-    'void (ns_common*)* put' offset changed from 256 to 192 (in bits) (by -64 bits)
-    'int (nsset*, ns_common*)* install' offset changed from 320 to 256 (in bits) (by -64 bits)
-    'user_namespace* (ns_common*)* owner' offset changed from 384 to 320 (in bits) (by -64 bits)
-    'ns_common* (ns_common*)* get_parent' offset changed from 448 to 384 (in bits) (by -64 bits)
-```
-
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `function int qmi_add_lookup(qmi_handle*, unsigned int, unsigned int, unsigned int)`, `function int qmi_handle_init(qmi_handle*, size_t, const qmi_ops*, const qmi_msg_handler*)`, `function void qmi_handle_release(qmi_handle*)`, `function ssize_t qmi_send_request(qmi_handle*, sockaddr_qrtr*, qmi_txn*, int, size_t, const qmi_elem_info*, void*)`, `function void qmi_txn_cancel(qmi_txn*)`, `function int qmi_txn_init(qmi_handle*, qmi_txn*, const qmi_elem_info*, void*)`, `function int qmi_txn_wait(qmi_txn*, unsigned long int)`, `function const char* __ieee80211_create_tpt_led_trigger(ieee80211_hw*, unsigned int, const ieee80211_tpt_blink*, unsigned int)`, `function const char* __ieee80211_get_radio_led_name(ieee80211_hw*)`, `function void __ieee80211_schedule_txq(ieee80211_hw*, ieee80211_txq*, bool)`, `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function void ieee80211_beacon_free_ema_list(ieee80211_ema_beacons*)`, `function sk_buff* ieee80211_beacon_get_template(ieee80211_hw*, ieee80211_vif*, ieee80211_mutable_offsets*, unsigned int)`, `function ieee80211_ema_beacons* ieee80211_beacon_get_template_ema_list(ieee80211_hw*, ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_tim(ieee80211_hw*, ieee80211_vif*, u16*, u16*, unsigned int)` … (+729 more)
 
 </details>
 
@@ -906,7 +1503,7 @@ Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus
     'int (sock*, int)* diag_destroy' offset changed from 3520 to 3456 (in bits) (by -64 bits)
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `function int qmi_add_lookup(qmi_handle*, unsigned int, unsigned int, unsigned int)`, `function int qmi_handle_init(qmi_handle*, size_t, const qmi_ops*, const qmi_msg_handler*)`, `function void qmi_handle_release(qmi_handle*)`, `function ssize_t qmi_send_request(qmi_handle*, sockaddr_qrtr*, qmi_txn*, int, size_t, const qmi_elem_info*, void*)`, `function void qmi_txn_cancel(qmi_txn*)`, `function int qmi_txn_init(qmi_handle*, qmi_txn*, const qmi_elem_info*, void*)`, `function int qmi_txn_wait(qmi_txn*, unsigned long int)`, `function const char* __ieee80211_create_tpt_led_trigger(ieee80211_hw*, unsigned int, const ieee80211_tpt_blink*, unsigned int)`, `function const char* __ieee80211_get_radio_led_name(ieee80211_hw*)`, `function void __ieee80211_schedule_txq(ieee80211_hw*, ieee80211_txq*, bool)`, `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function void ieee80211_beacon_free_ema_list(ieee80211_ema_beacons*)`, `function sk_buff* ieee80211_beacon_get_template(ieee80211_hw*, ieee80211_vif*, ieee80211_mutable_offsets*, unsigned int)`, `function ieee80211_ema_beacons* ieee80211_beacon_get_template_ema_list(ieee80211_hw*, ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_tim(ieee80211_hw*, ieee80211_vif*, u16*, u16*, unsigned int)` … (+729 more)
 
 </details>
 
@@ -956,7 +1553,229 @@ Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus
   ...
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `function int qmi_add_lookup(qmi_handle*, unsigned int, unsigned int, unsigned int)`, `function int qmi_handle_init(qmi_handle*, size_t, const qmi_ops*, const qmi_msg_handler*)`, `function void qmi_handle_release(qmi_handle*)`, `function ssize_t qmi_send_request(qmi_handle*, sockaddr_qrtr*, qmi_txn*, int, size_t, const qmi_elem_info*, void*)`, `function void qmi_txn_cancel(qmi_txn*)`, `function int qmi_txn_init(qmi_handle*, qmi_txn*, const qmi_elem_info*, void*)`, `function int qmi_txn_wait(qmi_txn*, unsigned long int)`, `function const char* __ieee80211_create_tpt_led_trigger(ieee80211_hw*, unsigned int, const ieee80211_tpt_blink*, unsigned int)`, `function const char* __ieee80211_get_radio_led_name(ieee80211_hw*)`, `function void __ieee80211_schedule_txq(ieee80211_hw*, ieee80211_txq*, bool)`, `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function void ieee80211_beacon_free_ema_list(ieee80211_ema_beacons*)`, `function sk_buff* ieee80211_beacon_get_template(ieee80211_hw*, ieee80211_vif*, ieee80211_mutable_offsets*, unsigned int)`, `function ieee80211_ema_beacons* ieee80211_beacon_get_template_ema_list(ieee80211_hw*, ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_tim(ieee80211_hw*, ieee80211_vif*, u16*, u16*, unsigned int)` … (+729 more)
+
+</details>
+
+<details><summary><code>struct timewait_sock_ops</code> (timewait_sock.h:14:1)</summary>
+
+```
+  type size changed from 256 to 192 (in bits)
+  1 data member deletion:
+    'void (sock*)* twsk_destructor', at offset 192 (in bits) at timewait_sock.h:18:1
+```
+
+Reaches: `function int qmi_add_lookup(qmi_handle*, unsigned int, unsigned int, unsigned int)`, `function int qmi_handle_init(qmi_handle*, size_t, const qmi_ops*, const qmi_msg_handler*)`, `function void qmi_handle_release(qmi_handle*)`, `function ssize_t qmi_send_request(qmi_handle*, sockaddr_qrtr*, qmi_txn*, int, size_t, const qmi_elem_info*, void*)`, `function void qmi_txn_cancel(qmi_txn*)`, `function int qmi_txn_init(qmi_handle*, qmi_txn*, const qmi_elem_info*, void*)`, `function int qmi_txn_wait(qmi_txn*, unsigned long int)`, `function const char* __ieee80211_create_tpt_led_trigger(ieee80211_hw*, unsigned int, const ieee80211_tpt_blink*, unsigned int)`, `function const char* __ieee80211_get_radio_led_name(ieee80211_hw*)`, `function void __ieee80211_schedule_txq(ieee80211_hw*, ieee80211_txq*, bool)`, `function ieee80211_hw* ieee80211_alloc_hw_nm(size_t, const ieee80211_ops*, const char*)`, `function void ieee80211_beacon_free_ema_list(ieee80211_ema_beacons*)`, `function sk_buff* ieee80211_beacon_get_template(ieee80211_hw*, ieee80211_vif*, ieee80211_mutable_offsets*, unsigned int)`, `function ieee80211_ema_beacons* ieee80211_beacon_get_template_ema_list(ieee80211_hw*, ieee80211_vif*, unsigned int)`, `function sk_buff* ieee80211_beacon_get_tim(ieee80211_hw*, ieee80211_vif*, u16*, u16*, unsigned int)` … (+729 more)
+
+</details>
+
+<details><summary><code>enum bpf_arg_type</code> (bpf.h:784:1)</summary>
+
+```
+  type size hasn't changed
+  1 enumerator change:
+    'bpf_arg_type::__BPF_ARG_TYPE_LIMIT' from value '134217727' to '268435455' at bpf.h:802:1
+```
+
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+744 more)
+
+</details>
+
+<details><summary><code>enum bpf_reg_type</code> (bpf.h:941:1)</summary>
+
+```
+  type size hasn't changed
+  1 enumerator change:
+    'bpf_reg_type::__BPF_REG_TYPE_LIMIT' from value '134217727' to '268435455' at bpf.h:959:1
+```
+
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+744 more)
+
+</details>
+
+<details><summary><code>enum bpf_return_type</code> (bpf.h:843:1)</summary>
+
+```
+  type size hasn't changed
+  1 enumerator change:
+    'bpf_return_type::__BPF_RET_TYPE_LIMIT' from value '134217727' to '268435455' at bpf.h:861:1
+```
+
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+744 more)
+
+</details>
+
+<details><summary><code>struct bpf_map</code> (bpf.h:290:1)</summary>
+
+```
+  type size changed from 1920 to 2240 (in bits)
+  2 data member insertions:
+    'u8 sha[32]', at offset 0 (in bits) at bpf.h:296:1
+    'char* excl_prog_sha', at offset 2176 (in bits) at bpf.h:337:1
+  there are data member changes:
+    'const bpf_map_ops* ops' offset changed from 0 to 256 (in bits) (by +256 bits)
+    'bpf_map* inner_map_meta' offset changed from 64 to 320 (in bits) (by +256 bits)
+    'void* security' offset changed from 128 to 384 (in bits) (by +256 bits)
+    'bpf_map_type map_type' offset changed from 192 to 448 (in bits) (by +256 bits)
+    'u32 key_size' offset changed from 224 to 480 (in bits) (by +256 bits)
+    'u32 value_size' offset changed from 256 to 512 (in bits) (by +256 bits)
+    'u32 max_entries' offset changed from 288 to 544 (in bits) (by +256 bits)
+    'u64 map_extra' offset changed from 320 to 576 (in bits) (by +256 bits)
+    'u32 map_flags' offset changed from 384 to 640 (in bits) (by +256 bits)
+    'u32 id' offset changed from 416 to 672 (in bits) (by +256 bits)
+    'btf_record* record' offset changed from 448 to 704 (in bits) (by +256 bits)
+    'int numa_node' offset changed from 512 to 768 (in bits) (by +256 bits)
+    'u32 btf_key_type_id' offset changed from 544 to 800 (in bits) (by +256 bits)
+    'u32 btf_value_type_id' offset changed from 576 to 832 (in bits) (by +256 bits)
+    'u32 btf_vmlinux_value_type_id' offset changed from 608 to 864 (in bits) (by +256 bits)
+    'btf* btf' offset changed from 640 to 896 (in bits) (by +256 bits)
+    'char name[16]' offset changed from 704 to 960 (in bits) (by +256 bits)
+    'mutex freeze_mutex' offset changed from 832 to 1088 (in bits) (by +256 bits)
+    'atomic64_t refcnt' offset changed from 1088 to 1344 (in bits) (by +256 bits)
+    'atomic64_t usercnt' offset changed from 1152 to 1408 (in bits) (by +256 bits)
+    anonymous data member 'union {work_struct work; callback_head rcu;}' offset changed from 1216 to 1472 (in bits) (by +256 bits)
+    'atomic64_t writecnt' offset changed from 1472 to 1728 (in bits) (by +256 bits)
+    'spinlock_t owner_lock' offset changed from 1536 to 1792 (in bits) (by +256 bits)
+    'bpf_map_owner* owner' offset changed from 1600 to 1856 (in bits) (by +256 bits)
+    'bool bypass_spec_v1' offset changed from 1664 to 1920 (in bits) (by +256 bits)
+    'bool frozen' offset changed from 1672 to 1928 (in bits) (by +256 bits)
+    'bool free_after_mult_rcu_gp' offset changed from 1680 to 1936 (in bits) (by +256 bits)
+    'bool free_after_rcu_gp' offset changed from 1688 to 1944 (in bits) (by +256 bits)
+    'atomic64_t sleepable_refcnt' offset changed from 1728 to 1984 (in bits) (by +256 bits)
+    's64* elem_count' offset changed from 1792 to 2048 (in bits) (by +256 bits)
+    'u64 cookie' offset changed from 1856 to 2112 (in bits) (by +256 bits)
+```
+
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+744 more)
+
+</details>
+
+<details><summary><code>struct bpf_map_ops</code> (bpf.h:82:1)</summary>
+
+```
+  type size changed from 2752 to 2816 (in bits)
+  1 data member insertion:
+    'int (bpf_map*, typedef u32, void*)* map_get_hash', at offset 1216 (in bits) at bpf.h:113:1
+  there are data member changes:
+    'void* (bpf_map*, file*, int)* map_fd_get_ptr' offset changed from 1216 to 1280 (in bits) (by +64 bits)
+    'void (bpf_map*, void*, typedef bool)* map_fd_put_ptr' offset changed from 1280 to 1344 (in bits) (by +64 bits)
+    'int (bpf_map*, bpf_insn*)* map_gen_lookup' offset changed from 1344 to 1408 (in bits) (by +64 bits)
+    'typedef u32 (void*)* map_fd_sys_lookup_elem' offset changed from 1408 to 1472 (in bits) (by +64 bits)
+    'void (bpf_map*, void*, seq_file*)* map_seq_show_elem' offset changed from 1472 to 1536 (in bits) (by +64 bits)
+    'int (const bpf_map*, const btf*, const btf_type*, const btf_type*)* map_check_btf' offset changed from 1536 to 1600 (in bits) (by +64 bits)
+    'int (bpf_map*, bpf_prog_aux*)* map_poke_track' offset changed from 1600 to 1664 (in bits) (by +64 bits)
+    'void (bpf_map*, bpf_prog_aux*)* map_poke_untrack' offset changed from 1664 to 1728 (in bits) (by +64 bits)
+    'void (bpf_map*, typedef u32, bpf_prog*, bpf_prog*)* map_poke_run' offset changed from 1728 to 1792 (in bits) (by +64 bits)
+    'int (const bpf_map*, u64*, typedef u32)* map_direct_value_addr' offset changed from 1792 to 1856 (in bits) (by +64 bits)
+    'int (const bpf_map*, typedef u64, u32*)* map_direct_value_meta' offset changed from 1856 to 1920 (in bits) (by +64 bits)
+    'int (bpf_map*, vm_area_struct*)* map_mmap' offset changed from 1920 to 1984 (in bits) (by +64 bits)
+    'typedef __poll_t (bpf_map*, file*, poll_table_struct*)* map_poll' offset changed from 1984 to 2048 (in bits) (by +64 bits)
+    'unsigned long int (file*, unsigned long int, unsigned long int, unsigned long int, unsigned long int)* map_get_unmapped_area' offset changed from 2048 to 2112 (in bits) (by +64 bits)
+    'int (bpf_local_storage_map*, void*, typedef u32)* map_local_storage_charge' offset changed from 2112 to 2176 (in bits) (by +64 bits)
+    'void (bpf_local_storage_map*, void*, typedef u32)* map_local_storage_uncharge' offset changed from 2176 to 2240 (in bits) (by +64 bits)
+    'bpf_local_storage** (void*)* map_owner_storage_ptr' offset changed from 2240 to 2304 (in bits) (by +64 bits)
+    'long int (bpf_map*, typedef u64, typedef u64)* map_redirect' offset changed from 2304 to 2368 (in bits) (by +64 bits)
+    'typedef bool (const bpf_map*, const bpf_map*)* map_meta_equal' offset changed from 2368 to 2432 (in bits) (by +64 bits)
+    'int (bpf_verifier_env*, bpf_func_state*, bpf_func_state*)* map_set_for_each_callback_args' offset changed from 2432 to 2496 (in bits) (by +64 bits)
+    'long int (bpf_map*, typedef bpf_callback_t, void*, typedef u64)* map_for_each_callback' offset changed from 2496 to 2560 (in bits) (by +64 bits)
+    'typedef u64 (const bpf_map*)* map_mem_usage' offset changed from 2560 to 2624 (in bits) (by +64 bits)
+    'int* map_btf_id' offset changed from 2624 to 2688 (in bits) (by +64 bits)
+    'const bpf_iter_seq_info* iter_seq_info' offset changed from 2688 to 2752 (in bits) (by +64 bits)
+```
+
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+744 more)
+
+</details>
+
+<details><summary><code>struct bpf_map_owner</code> (bpf.h:282:1)</summary>
+
+```
+  type size changed from 256 to 320 (in bits)
+  1 data member insertion:
+    'bpf_attach_type expected_attach_type', at offset 256 (in bits) at bpf.h:292:1
+```
+
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+744 more)
+
+</details>
+
+<details><summary><code>struct bpf_prog</code> (bpf.h:1693:1)</summary>
+
+```
+  type size changed from 576 to 768 (in bits)
+  there are data member changes:
+    data member u8 tag[8] at offset 160 (in bits) became anonymous data member 'union {u8 digest[32]; u8 tag[8];}'
+    and size changed from 64 to 256 (in bits) (by +192 bits)
+    'bpf_prog_stats* stats' offset changed from 256 to 448 (in bits) (by +192 bits)
+    'int* active' offset changed from 320 to 512 (in bits) (by +192 bits)
+    'unsigned int (void*, const bpf_insn*)* bpf_func' offset changed from 384 to 576 (in bits) (by +192 bits)
+    'bpf_prog_aux* aux' offset changed from 448 to 640 (in bits) (by +192 bits)
+    'sock_fprog_kern* orig_prog' offset changed from 512 to 704 (in bits) (by +192 bits)
+    anonymous data member 'union {struct {struct {} __empty_insns; sock_filter insns[];}; struct {struct {} __empty_insnsi; bpf_insn insnsi[];};}' offset changed from 576 to 768 (in bits) (by +192 bits)
+```
+
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+744 more)
+
+</details>
+
+<details><summary><code>struct bpf_prog_aux</code> (bpf.h:1582:1)</summary>
+
+```
+  type size changed from 10304 to 10368 (in bits)
+  2 data member insertions:
+    'bool kprobe_write_ctx', at offset 1336 (in bits) at bpf.h:1642:1
+    'bpf_prog_aux* main_prog_aux', at offset 1984 (in bits) at bpf.h:1652:1
+  there are data member changes:
+    'void* jit_data' offset changed from 1984 to 2048 (in bits) (by +64 bits)
+    'bpf_jit_poke_descriptor* poke_tab' offset changed from 2048 to 2112 (in bits) (by +64 bits)
+    'bpf_kfunc_desc_tab* kfunc_tab' offset changed from 2112 to 2176 (in bits) (by +64 bits)
+    'bpf_kfunc_btf_tab* kfunc_btf_tab' offset changed from 2176 to 2240 (in bits) (by +64 bits)
+    'u32 size_poke_tab' offset changed from 2240 to 2304 (in bits) (by +64 bits)
+    'bpf_ksym ksym' offset changed from 2304 to 2368 (in bits) (by +64 bits)
+    'const bpf_prog_ops* ops' offset changed from 7104 to 7168 (in bits) (by +64 bits)
+    'const bpf_struct_ops* st_ops' offset changed from 7168 to 7232 (in bits) (by +64 bits)
+    'bpf_map** used_maps' offset changed from 7232 to 7296 (in bits) (by +64 bits)
+    'mutex used_maps_mutex' offset changed from 7296 to 7360 (in bits) (by +64 bits)
+    'btf_mod_pair* used_btfs' offset changed from 7552 to 7616 (in bits) (by +64 bits)
+    'bpf_prog* prog' offset changed from 7616 to 7680 (in bits) (by +64 bits)
+    'user_struct* user' offset changed from 7680 to 7744 (in bits) (by +64 bits)
+    'u64 load_time' offset changed from 7744 to 7808 (in bits) (by +64 bits)
+    'u32 verified_insns' offset changed from 7808 to 7872 (in bits) (by +64 bits)
+    'int cgroup_atype' offset changed from 7840 to 7904 (in bits) (by +64 bits)
+    'bpf_map* cgroup_storage[2]' offset changed from 7872 to 7936 (in bits) (by +64 bits)
+    'char name[16]' offset changed from 8000 to 8064 (in bits) (by +64 bits)
+    'typedef u64 (typedef u64, typedef u64, typedef u64, typedef u64, typedef u64)* bpf_exception_cb' offset changed from 8128 to 8192 (in bits) (by +64 bits)
+    'void* security' offset changed from 8192 to 8256 (in bits) (by +64 bits)
+    'bpf_token* token' offset changed from 8256 to 8320 (in bits) (by +64 bits)
+    'bpf_prog_offload* offload' offset changed from 8320 to 8384 (in bits) (by +64 bits)
+    'btf* btf' offset changed from 8384 to 8448 (in bits) (by +64 bits)
+    'bpf_func_info* func_info' offset changed from 8448 to 8512 (in bits) (by +64 bits)
+    'bpf_func_info_aux* func_info_aux' offset changed from 8512 to 8576 (in bits) (by +64 bits)
+    'bpf_line_info* linfo' offset changed from 8576 to 8640 (in bits) (by +64 bits)
+    'void** jited_linfo' offset changed from 8640 to 8704 (in bits) (by +64 bits)
+    'u32 func_info_cnt' offset changed from 8704 to 8768 (in bits) (by +64 bits)
+    'u32 nr_linfo' offset changed from 8736 to 8800 (in bits) (by +64 bits)
+    'u32 linfo_idx' offset changed from 8768 to 8832 (in bits) (by +64 bits)
+    'module* mod' offset changed from 8832 to 8896 (in bits) (by +64 bits)
+    'u32 num_exentries' offset changed from 8896 to 8960 (in bits) (by +64 bits)
+    'exception_table_entry* extable' offset changed from 8960 to 9024 (in bits) (by +64 bits)
+    anonymous data member 'union {work_struct work; callback_head rcu;}' offset changed from 9024 to 9088 (in bits) (by +64 bits)
+    'bpf_stream stream[2]' offset changed from 9280 to 9344 (in bits) (by +64 bits)
+```
+
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+744 more)
+
+</details>
+
+<details><summary><code>struct btf_record</code> (bpf.h:254:1)</summary>
+
+```
+  type size hasn't changed
+  1 data member insertion:
+    'int task_work_off', at offset 224 (in bits) at bpf.h:265:1
+```
+
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+744 more)
 
 </details>
 
@@ -976,54 +1795,48 @@ Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus
     and size changed from 1216 to 768 (in bits) (by -448 bits)
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+475 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+744 more)
 
 </details>
 
-<details><summary><code>struct trace_iterator</code> (trace_events.h:96:1)</summary>
+<details><summary><code>struct arch_uprobe</code> (uprobes.h:25:1)</summary>
 
 ```
-  type size changed from 132736 to 132608 (in bits)
-  there are data member changes:
-    type 'struct trace_seq' of 'trace_iterator::tmp_seq' changed:
-      type size changed from 65600 to 65536 (in bits)
-      there are data member changes:
-        'char buffer[8156]' offset changed from 0 to 288 (in bits) (by +288 bits)
-        'seq_buf seq' offset changed from 65280 to 0 (in bits) (by -65280 bits)
-        'size_t readpos' offset changed from 65472 to 192 (in bits) (by -65280 bits)
-        'int full' offset changed from 65536 to 256 (in bits) (by -65280 bits)
-    'cpumask_var_t started' offset changed from 66560 to 66496 (in bits) (by -64 bits)
-    'bool closed' offset changed from 66624 to 66560 (in bits) (by -64 bits)
-    'bool snapshot' offset changed from 66632 to 66568 (in bits) (by -64 bits)
-    type 'struct trace_seq' of 'trace_iterator::seq' changed, as reported earlier
-    and offset changed from 66688 to 66624 (in bits) (by -64 bits)
-    'trace_entry* ent' offset changed from 132288 to 132160 (in bits) (by -128 bits)
-    'unsigned long int lost_events' offset changed from 132352 to 132224 (in bits) (by -128 bits)
-    'int leftover' offset changed from 132416 to 132288 (in bits) (by -128 bits)
-    'int ent_size' offset changed from 132448 to 132320 (in bits) (by -128 bits)
-    'int cpu' offset changed from 132480 to 132352 (in bits) (by -128 bits)
-    'u64 ts' offset changed from 132544 to 132416 (in bits) (by -128 bits)
-    'loff_t pos' offset changed from 132608 to 132480 (in bits) (by -128 bits)
-    'long int idx' offset changed from 132672 to 132544 (in bits) (by -128 bits)
+  type size changed from 256 to 320 (in bits)
+  1 data member insertion:
+    'unsigned long int flags', at offset 256 (in bits) at uprobes.h:54:1
 ```
 
-Reaches: `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong`, `const kernel_param_ops param_ops_ulong`, `const bus_type pci_bus_type`, `const file_operations relay_file_operations`, `function page* __alloc_pages_noprof(gfp_t, unsigned int, int, nodemask_t*)` … (+477 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
 
 </details>
 
-<details><summary><code>struct pid_namespace</code> (pid_namespace.h:26:1)</summary>
+<details><summary><code>struct attribute_group</code> (sysfs.h:99:1)</summary>
 
 ```
-  type size changed from 2304 to 2752 (in bits)
+  type size hasn't changed
   there are data member changes:
-    type 'struct ns_common' of 'pid_namespace::ns' changed, as reported earlier
-    'work_struct work' offset changed from 1088 to 1536 (in bits) (by +448 bits)
-    'ctl_table_set set' offset changed from 1344 to 1792 (in bits) (by +448 bits)
-    'ctl_table_header* sysctls' offset changed from 2176 to 2624 (in bits) (by +448 bits)
-    'int memfd_noexec_scope' offset changed from 2240 to 2688 (in bits) (by +448 bits)
+    anonymous data member union {const bin_attribute* const* bin_attrs; const bin_attribute* const* bin_attrs_new;} at offset 320 (in bits) became data member 'const bin_attribute* const* bin_attrs'
 ```
 
-Reaches: `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string`, `const kernel_param_ops param_ops_uint`, `const kernel_param_ops param_ops_ullong` … (+479 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
+
+</details>
+
+<details><summary><code>struct bin_attribute</code> (sysfs.h:304:1)</summary>
+
+```
+  type size changed from 704 to 576 (in bits)
+  2 data member deletions:
+    'typedef ssize_t (file*, kobject*, const bin_attribute*, char*, typedef loff_t, typedef size_t)* read_new', at offset 384 (in bits) at sysfs.h:311:1
+    'typedef ssize_t (file*, kobject*, const bin_attribute*, char*, typedef loff_t, typedef size_t)* write_new', at offset 512 (in bits) at sysfs.h:315:1
+  there are data member changes:
+    'typedef ssize_t (file*, kobject*, const bin_attribute*, char*, typedef loff_t, typedef size_t)* write' offset changed from 448 to 384 (in bits) (by -64 bits)
+    'typedef loff_t (file*, kobject*, const bin_attribute*, typedef loff_t, int)* llseek' offset changed from 576 to 448 (in bits) (by -128 bits)
+    'int (file*, kobject*, const bin_attribute*, vm_area_struct*)* mmap' offset changed from 640 to 512 (in bits) (by -128 bits)
+```
+
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
 
 </details>
 
@@ -1041,7 +1854,7 @@ Reaches: `function void cec_fill_conn_info_from_drm(cec_connector_info*, const d
     'cgroup* ancestors[]' offset changed from 8384 to 8512 (in bits) (by +128 bits)
 ```
 
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string` … (+481 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
 
 </details>
 
@@ -1067,7 +1880,7 @@ Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_a
     'css_set* root_cset' offset changed from 320 to 768 (in bits) (by +448 bits)
 ```
 
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string` … (+481 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
 
 </details>
 
@@ -1079,7 +1892,7 @@ Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_a
     type 'struct cgroup' of 'cgroup_root::cgrp' changed, as reported earlier
 ```
 
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string` … (+481 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
 
 </details>
 
@@ -1112,72 +1925,7 @@ Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_a
     'llist_head* lhead' offset changed from 2048 to 1984 (in bits) (by -64 bits)
 ```
 
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string` … (+481 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct user_namespace</code> (user_namespace.h:76:1)</summary>
-
-```
-  type size changed from 4736 to 5184 (in bits)
-  there are data member changes:
-    type 'struct ns_common' of 'user_namespace::ns' changed, as reported earlier
-    'unsigned long int flags' offset changed from 1920 to 2368 (in bits) (by +448 bits)
-    'bool parent_could_setfcap' offset changed from 1984 to 2432 (in bits) (by +448 bits)
-    'list_head keyring_name_list' offset changed from 2048 to 2496 (in bits) (by +448 bits)
-    'key* user_keyring_register' offset changed from 2176 to 2624 (in bits) (by +448 bits)
-    'rw_semaphore keyring_sem' offset changed from 2240 to 2688 (in bits) (by +448 bits)
-    'work_struct work' offset changed from 2560 to 3008 (in bits) (by +448 bits)
-    'ctl_table_set set' offset changed from 2816 to 3264 (in bits) (by +448 bits)
-    'ctl_table_header* sysctls' offset changed from 3648 to 4096 (in bits) (by +448 bits)
-    'ucounts* ucounts' offset changed from 3712 to 4160 (in bits) (by +448 bits)
-    'long int ucount_max[10]' offset changed from 3776 to 4224 (in bits) (by +448 bits)
-    'long int rlimit_max[4]' offset changed from 4416 to 4864 (in bits) (by +448 bits)
-    'binfmt_misc* binfmt_misc' offset changed from 4672 to 5120 (in bits) (by +448 bits)
-```
-
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int`, `const kernel_param_ops param_ops_string` … (+481 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct arch_uprobe</code> (uprobes.h:25:1)</summary>
-
-```
-  type size changed from 256 to 320 (in bits)
-  1 data member insertion:
-    'unsigned long int flags', at offset 256 (in bits) at uprobes.h:54:1
-```
-
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `function int virtio_dma_buf_attach(dma_buf*, dma_buf_attachment*)`, `function dma_buf* virtio_dma_buf_export(const dma_buf_export_info*)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint` … (+483 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct attribute_group</code> (sysfs.h:99:1)</summary>
-
-```
-  type size hasn't changed
-  there are data member changes:
-    anonymous data member union {const bin_attribute* const* bin_attrs; const bin_attribute* const* bin_attrs_new;} at offset 320 (in bits) became data member 'const bin_attribute* const* bin_attrs'
-```
-
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `function int virtio_dma_buf_attach(dma_buf*, dma_buf_attachment*)`, `function dma_buf* virtio_dma_buf_export(const dma_buf_export_info*)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint` … (+483 more, see impacted.tsv)
-
-</details>
-
-<details><summary><code>struct bin_attribute</code> (sysfs.h:304:1)</summary>
-
-```
-  type size changed from 704 to 576 (in bits)
-  2 data member deletions:
-    'typedef ssize_t (file*, kobject*, const bin_attribute*, char*, typedef loff_t, typedef size_t)* read_new', at offset 384 (in bits) at sysfs.h:311:1
-    'typedef ssize_t (file*, kobject*, const bin_attribute*, char*, typedef loff_t, typedef size_t)* write_new', at offset 512 (in bits) at sysfs.h:315:1
-  there are data member changes:
-    'typedef ssize_t (file*, kobject*, const bin_attribute*, char*, typedef loff_t, typedef size_t)* write' offset changed from 448 to 384 (in bits) (by -64 bits)
-    'typedef loff_t (file*, kobject*, const bin_attribute*, typedef loff_t, int)* llseek' offset changed from 576 to 448 (in bits) (by -128 bits)
-    'int (file*, kobject*, const bin_attribute*, vm_area_struct*)* mmap' offset changed from 640 to 512 (in bits) (by -128 bits)
-```
-
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `function int virtio_dma_buf_attach(dma_buf*, dma_buf_attachment*)`, `function dma_buf* virtio_dma_buf_export(const dma_buf_export_info*)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint` … (+483 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
 
 </details>
 
@@ -1187,7 +1935,7 @@ Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_a
   type size hasn't changed
 ```
 
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `function int virtio_dma_buf_attach(dma_buf*, dma_buf_attachment*)`, `function dma_buf* virtio_dma_buf_export(const dma_buf_export_info*)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint` … (+483 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
 
 </details>
 
@@ -1197,7 +1945,7 @@ Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_a
   type size hasn't changed
 ```
 
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `function int virtio_dma_buf_attach(dma_buf*, dma_buf_attachment*)`, `function dma_buf* virtio_dma_buf_export(const dma_buf_export_info*)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint` … (+483 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
 
 </details>
 
@@ -1208,7 +1956,7 @@ Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_a
   there are data member changes:
 ```
 
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `function int virtio_dma_buf_attach(dma_buf*, dma_buf_attachment*)`, `function dma_buf* virtio_dma_buf_export(const dma_buf_export_info*)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint` … (+483 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
 
 </details>
 
@@ -1218,7 +1966,7 @@ Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_a
   type size hasn't changed
 ```
 
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `function int virtio_dma_buf_attach(dma_buf*, dma_buf_attachment*)`, `function dma_buf* virtio_dma_buf_export(const dma_buf_export_info*)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint` … (+483 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
 
 </details>
 
@@ -1232,7 +1980,7 @@ Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_a
       type size hasn't changed
 ```
 
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `function int virtio_dma_buf_attach(dma_buf*, dma_buf_attachment*)`, `function dma_buf* virtio_dma_buf_export(const dma_buf_export_info*)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint` … (+483 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
 
 </details>
 
@@ -1251,7 +1999,7 @@ Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_a
     'rw_semaphore exec_update_lock' offset changed from 8448 to 8768 (in bits) (by +320 bits)
 ```
 
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `function int virtio_dma_buf_attach(dma_buf*, dma_buf_attachment*)`, `function dma_buf* virtio_dma_buf_export(const dma_buf_export_info*)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint` … (+483 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
 
 </details>
 
@@ -1301,7 +2049,7 @@ Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_a
   ...
 ```
 
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `function int virtio_dma_buf_attach(dma_buf*, dma_buf_attachment*)`, `function dma_buf* virtio_dma_buf_export(const dma_buf_export_info*)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint` … (+483 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
 
 </details>
 
@@ -1313,7 +2061,31 @@ Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_a
     'hlist_head head_tramps', at offset 64 (in bits) at uprobes.h:190:1
 ```
 
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `function int virtio_dma_buf_attach(dma_buf*, dma_buf_attachment*)`, `function dma_buf* virtio_dma_buf_export(const dma_buf_export_info*)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint` … (+483 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
+
+</details>
+
+<details><summary><code>struct user_namespace</code> (user_namespace.h:76:1)</summary>
+
+```
+  type size changed from 4736 to 5184 (in bits)
+  there are data member changes:
+    type 'struct ns_common' of 'user_namespace::ns' changed, as reported earlier
+    'unsigned long int flags' offset changed from 1920 to 2368 (in bits) (by +448 bits)
+    'bool parent_could_setfcap' offset changed from 1984 to 2432 (in bits) (by +448 bits)
+    'list_head keyring_name_list' offset changed from 2048 to 2496 (in bits) (by +448 bits)
+    'key* user_keyring_register' offset changed from 2176 to 2624 (in bits) (by +448 bits)
+    'rw_semaphore keyring_sem' offset changed from 2240 to 2688 (in bits) (by +448 bits)
+    'work_struct work' offset changed from 2560 to 3008 (in bits) (by +448 bits)
+    'ctl_table_set set' offset changed from 2816 to 3264 (in bits) (by +448 bits)
+    'ctl_table_header* sysctls' offset changed from 3648 to 4096 (in bits) (by +448 bits)
+    'ucounts* ucounts' offset changed from 3712 to 4160 (in bits) (by +448 bits)
+    'long int ucount_max[10]' offset changed from 3776 to 4224 (in bits) (by +448 bits)
+    'long int rlimit_max[4]' offset changed from 4416 to 4864 (in bits) (by +448 bits)
+    'binfmt_misc* binfmt_misc' offset changed from 4672 to 5120 (in bits) (by +448 bits)
+```
+
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
 
 </details>
 
@@ -1337,7 +2109,7 @@ Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_a
     'void* private_data' offset changed from 512 to 576 (in bits) (by +64 bits)
 ```
 
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `function int virtio_dma_buf_attach(dma_buf*, dma_buf_attachment*)`, `function dma_buf* virtio_dma_buf_export(const dma_buf_export_info*)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint` … (+483 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
 
 </details>
 
@@ -1349,7 +2121,7 @@ Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_a
     'page* (vm_area_struct*, unsigned long int)* find_special_page', at offset 960 (in bits) at mm.h:656:1
 ```
 
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `function int virtio_dma_buf_attach(dma_buf*, dma_buf_attachment*)`, `function dma_buf* virtio_dma_buf_export(const dma_buf_export_info*)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint` … (+483 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+750 more)
 
 </details>
 
@@ -1363,20 +2135,20 @@ Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_a
     'ktime_t offset' offset changed from 448 to 384 (in bits) (by -64 bits)
 ```
 
-Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `function int virtio_dma_buf_attach(dma_buf*, dma_buf_attachment*)`, `function dma_buf* virtio_dma_buf_export(const dma_buf_export_info*)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const bus_type i2c_bus_type`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint` … (+489 more, see impacted.tsv)
+Reaches: `function mhi_controller* mhi_alloc_controller()`, `function int mhi_device_get_sync(mhi_device*)`, `function void mhi_device_put(mhi_device*)`, `function int mhi_download_rddm_image(mhi_controller*, bool)`, `function void mhi_free_controller(mhi_controller*)`, `function int mhi_pm_resume(mhi_controller*)`, `function int mhi_pm_resume_force(mhi_controller*)`, `function int mhi_pm_suspend(mhi_controller*)`, `function void mhi_power_down(mhi_controller*, bool)`, `function void mhi_power_down_keep_dev(mhi_controller*, bool)`, `function int mhi_prepare_for_power_up(mhi_controller*)`, `function int mhi_register_controller(mhi_controller*, const mhi_controller_config*)`, `function int mhi_sync_power_up(mhi_controller*)`, `function void mhi_unprepare_after_power_down(mhi_controller*)`, `function void mhi_unregister_controller(mhi_controller*)` … (+756 more)
 
 </details>
 
 ## Header-level interfaces
 
-Macros, static inline functions, struct/union/enum tags, typedefs and enumerators defined in non-DRM Linux headers (`include/`, `arch/x86/include/`) and named in the compiled DRM sources. These never appear as ELF symbols, but LinuxKPI has to provide them. Name-based, so a name can occasionally be a false positive (e.g. a struct member that happens to share a macro's name).
+Macros, static inline functions, struct/union/enum tags, typedefs and enumerators defined in provider headers (headers the consumer objects were compiled against that are not consumer code) and named in consumer code. They never appear as ELF symbols, but LinuxKPI has to provide them. Name-based, so an occasional false positive is possible (e.g. a local variable or member sharing a macro's name).
 
 | | count |
 |---|---|
-| used in v6.17 | 2949 |
-| used in v6.18 | 2982 |
-| newly used | 40 |
-| no longer used | 7 |
+| used in v6.17 | 4826 |
+| used in v6.18 | 4849 |
+| newly used | 41 |
+| no longer used | 18 |
 | likely renames | 0 |
 | macro/inline signature changed | 15 |
 | macro body changed | 7 |
@@ -1392,7 +2164,8 @@ None.
 |---|---|---|---|---|
 | `BACKLIGHT_SCALE_LINEAR` | enumerator | include/linux/backlight.h |  | amdgpu |
 | `BACKLIGHT_SCALE_NON_LINEAR` | enumerator | include/linux/backlight.h |  | amdgpu |
-| `FIELD_PREP_WM16` | macro | include/linux/hw_bitfield.h | `(_mask,_val)` | drm-headers |
+| `IEEE80211_TPE_EIRP_ENTRIES_320MHZ` | macro | include/net/mac80211.h |  | ath12k |
+| `IEEE80211_TPE_PSD_ENTRIES_320MHZ` | macro | include/net/mac80211.h |  | ath12k |
 | `PATH_MAX` | macro | include/uapi/linux/limits.h |  | xe |
 | `PCI_COMMAND_MASTER` | macro | include/uapi/linux/pci_regs.h |  | xe |
 | `PCI_EXP_TYPE_DOWNSTREAM` | macro | include/uapi/linux/pci_regs.h |  | amdgpu |
@@ -1401,42 +2174,53 @@ None.
 | `PCI_VENDOR_ID_AMD` | macro | include/linux/pci_ids.h |  | amdgpu |
 | `SYSTEM_POWER_OFF` | enumerator | include/linux/kernel.h |  | amdgpu |
 | `TAINT_TEST` | macro | include/linux/panic.h |  | xe |
+| `WIPHY_BSS_PARAM_AP_ISOLATE` | enumerator | include/net/cfg80211.h |  | brcmfmac |
 | `atomic_read_acquire` | inline | include/linux/atomic/atomic-instrumented.h | `int(const atomic_t *v)` | amdgpu,xe |
 | `bitmap_read` | inline | include/linux/bitmap.h | `unsigned long(const unsigned long *map, unsigned long start, unsigned long nbits)` | amdgpu |
 | `bitmap_write` | inline | include/linux/bitmap.h | `void(unsigned long *map, unsigned long value, unsigned long start, unsigned long nbits)` | amdgpu |
 | `bmap` | inline | include/linux/fs.h | `int(struct inode *inode, sector_t *block)` | amdgpu |
+| `bss_parameters` | struct | include/net/cfg80211.h |  | brcmfmac |
 | `devm_add_action` | macro | include/linux/device/devres.h | `(dev,action,data)` | xe |
 | `devm_mutex_init` | macro | include/linux/mutex.h | `(dev,mutex)` | xe |
 | `devm_remove_action` | inline | include/linux/device/devres.h | `void(struct device *dev, void (*action)(void *), void *data)` | xe |
+| `ieee80211_mmie` | struct | include/linux/ieee80211.h |  | iwlmld,iwlmvm |
 | `list_is_head` | inline | include/linux/list.h | `int(const struct list_head *list, const struct list_head *head)` | amdgpu |
-| `list_last_entry_or_null` | macro | include/linux/list.h | `(ptr,type,member)` | drm-headers |
+| `list_last_entry_or_null` | macro | include/linux/list.h | `(ptr,type,member)` | drm,drm_display_helper,drm_kms_helper |
 | `mempool` | struct | include/linux/mempool.h |  | xe |
 | `no_free_ptr` | macro | include/linux/cleanup.h | `(p)` | amdgpu |
+| `of_reserved_mem_region_to_resource` | inline | include/linux/of_reserved_mem.h | `int(const struct device_node *np, unsigned int idx, struct resource *res)` | ath11k |
 | `pci_dev_for_each_resource` | macro | include/linux/pci.h | `(dev,res,...)` | xe |
 | `pci_pcie_type` | inline | include/linux/pci.h | `int(const struct pci_dev *dev)` | amdgpu |
 | `pm_hibernation_mode_is_suspend` | inline | include/linux/suspend.h | `bool(void)` | amdgpu |
 | `pm_ptr` | macro | include/linux/pm.h | `(_ptr)` | amdgpu |
-| `pm_sleep_ptr` | macro | include/linux/pm.h | `(_ptr)` | amdgpu |
-| `poll_timeout_us` | macro | include/linux/iopoll.h | `(op,cond,sleep_us,timeout_us,sleep_before_op)` | amdgpu,drm-headers,i915 |
+| `poll_timeout_us` | macro | include/linux/iopoll.h | `(op,cond,sleep_us,timeout_us,sleep_before_op)` | amdgpu,i915 |
 | `poll_timeout_us_atomic` | macro | include/linux/iopoll.h | `(op,cond,delay_us,timeout_us,delay_before_op)` | i915 |
-| `psp_version` | enum | include/uapi/linux/psp.h |  | amdgpu,drm-headers |
 | `range_end_overflows_t` | macro | include/linux/overflow.h | `(type,start,size,max)` | i915 |
 | `range_overflows` | macro | include/linux/overflow.h | `(start,size,max)` | drm_buddy,i915 |
 | `range_overflows_t` | macro | include/linux/overflow.h | `(type,start,size,max)` | i915 |
-| `readl_poll_timeout_atomic` | macro | include/linux/iopoll.h | `(addr,val,cond,delay_us,timeout_us)` | drm-headers |
-| `reset_mode` | enum | include/uapi/linux/fd.h |  | amdgpu |
 | `try_cmpxchg64` | macro | include/linux/atomic/atomic-instrumented.h | `(ptr,oldp,...)` | i915 |
 | `vcalloc` | macro | include/linux/vmalloc.h | `(...)` | radeon |
 | `vfs_parse_fs_string` | inline | include/linux/fs_context.h | `int(struct fs_context *fc, const char *key, const char *value)` | i915 |
-| `video_is_primary_device` | macro | include/asm-generic/video.h |  | drm |
+| `video_is_primary_device` | macro | arch/x86/include/asm/video.h |  | drm |
 | `vmalloc_array` | macro | include/linux/vmalloc.h | `(...)` | radeon |
 
 ### No longer used (header)
 
 | name | kind | header | signature | used by |
 |---|---|---|---|---|
+| `BSS_CHANGED_MLD_TTLM` | enumerator | include/net/mac80211.h |  | iwlmvm |
+| `BSS_CHANGED_MLD_VALID_LINKS` | enumerator | include/net/mac80211.h |  | iwlmvm |
 | `HMM_PFN_FLAGS` | enumerator | include/linux/hmm.h |  | xe |
 | `HMM_PFN_VALID` | enumerator | include/linux/hmm.h |  | xe |
+| `IEEE80211_GMAC_PN_LEN` | macro | include/linux/ieee80211.h |  | iwlmld,iwlmvm |
+| `WLAN_KEY_LEN_AES_CMAC` | enumerator | include/linux/ieee80211.h |  | iwlmld,iwlmvm |
+| `WLAN_KEY_LEN_BIP_CMAC_256` | enumerator | include/linux/ieee80211.h |  | iwlmld,iwlmvm |
+| `WLAN_KEY_LEN_BIP_GMAC_128` | enumerator | include/linux/ieee80211.h |  | iwlmld,iwlmvm |
+| `WLAN_KEY_LEN_BIP_GMAC_256` | enumerator | include/linux/ieee80211.h |  | iwlmld,iwlmvm |
+| `WLAN_KEY_LEN_CCMP` | enumerator | include/linux/ieee80211.h |  | iwlmld,iwlmvm |
+| `WLAN_KEY_LEN_GCMP` | enumerator | include/linux/ieee80211.h |  | iwlmld,iwlmvm |
+| `WLAN_KEY_LEN_GCMP_256` | enumerator | include/linux/ieee80211.h |  | iwlmld,iwlmvm |
+| `WLAN_KEY_LEN_TKIP` | enumerator | include/linux/ieee80211.h |  | iwlmld,iwlmvm |
 | `cmpxchg64` | macro | include/linux/atomic/atomic-instrumented.h | `(ptr,...)` | i915 |
 | `hmm_pfn_to_map_order` | inline | include/linux/hmm.h | `unsigned int(unsigned long hmm_pfn)` | xe |
 | `is_device_private_page` | inline | include/linux/memremap.h | `bool(const struct page *page)` | xe |
@@ -1483,35 +2267,60 @@ None.
 
 </details>
 
-## Same interface, different set of DRM users
+## Same interface, different set of users
 
 | symbol | v6.17 | v6.18 |
 |---|---|---|
+| `__dma_sync_single_for_cpu` | ath10k_pci,ath11k,ath12k,iwlwifi,mt76,rtw88_pci,rtw89_pci | ath10k_pci,ath11k,ath12k,iwlwifi,mt76,mt7996e,rtw88_pci,rtw89_pci |
+| `__dma_sync_single_for_device` | ath10k_core,ath10k_pci,ath11k,iwlwifi,mt76,rtw88_pci,rtw89_pci | ath10k_core,ath10k_pci,ath11k,iwlwifi,mt76,mt7996e,rtw88_pci,rtw89_pci |
 | `__mmap_lock_do_trace_acquire_returned` | amdgpu,i915,radeon,xe | amdgpu,i915,radeon |
 | `__mmap_lock_do_trace_start_locking` | amdgpu,i915,radeon,xe | amdgpu,i915,radeon |
+| `__sw_hweight32` | amdgpu,drm_display_helper,drm,drm_kms_helper,i915,radeon,xe,ath10k_core,ath11k,ath12k,iwlwifi,iwlmld,iwlmvm,mt76,mt76-connac-lib,mt7615-common,mt7915e,mt7921-common,mt7925-common,mt7996e,rtw88_core,rtw89_core | amdgpu,drm_display_helper,drm,drm_kms_helper,i915,radeon,xe,ath10k_core,ath11k,ath12k,iwlwifi,iwlmld,iwlmvm,mt76,mt76-connac-lib,mt7615-common,mt7915e,mt7921-common,mt7925-common,mt7996e,rtw88_core,rtw89_core,rtw89_pci |
 | `__tracepoint_mmap_lock_acquire_returned` | amdgpu,i915,radeon,xe | amdgpu,i915,radeon |
 | `__tracepoint_mmap_lock_start_locking` | amdgpu,i915,radeon,xe | amdgpu,i915,radeon |
-| `__x86_indirect_thunk_r10` | amdgpu,drm,drm_gpuvm,i915,ttm,xe | amdgpu,drm,i915,ttm,xe |
-| `__x86_indirect_thunk_r8` | amdgpu,drm,drm_gpuvm,drm_kms_helper,i915,radeon,xe | amdgpu,drm,drm_kms_helper,i915,radeon,xe |
-| `__x86_indirect_thunk_rcx` | amdgpu,drm,drm_kms_helper,i915,radeon,xe | amdgpu,drm,drm_kms_helper,gpu-sched,i915,radeon,xe |
+| `__x86_indirect_thunk_r10` | amdgpu,drm,drm_gpuvm,i915,ttm,xe,ath10k_core,iwlwifi,mt76,mt7915e,mt7996e,rtw89_core | amdgpu,drm,i915,ttm,xe,ath10k_core,iwlwifi,mt76,mt7915e,mt7996e,rtw89_8852b,rtw89_core |
+| `__x86_indirect_thunk_r11` | amdgpu,i915,xe,ath10k_core,rtw89_pci | amdgpu,i915,xe,ath10k_core,rtw89_8852bt,rtw89_pci |
+| `__x86_indirect_thunk_r8` | amdgpu,drm,drm_gpuvm,drm_kms_helper,i915,radeon,xe,ath12k,mt76,mt7615-common,mt7915e,mt7996e,rtw88_8822c,rtw88_core,rtw89_8851b,rtw89_8852a,rtw89_8852b_common,rtw89_core,rtw89_pci | amdgpu,drm,drm_kms_helper,i915,radeon,xe,ath12k,mt76,mt7615-common,mt7915e,mt7996e,rtw88_8822c,rtw88_core,rtw89_8851b,rtw89_8852a,rtw89_8852b_common,rtw89_core |
+| `__x86_indirect_thunk_r9` | amdgpu,drm,drm_gpuvm,i915,xe,ath11k,ath12k,mt76,mt7996e,rtw88_8822b,rtw88_8822c,rtw89_core,rtw89_pci | amdgpu,drm,drm_gpuvm,i915,xe,ath11k,ath12k,mt76,mt7996e,rtw88_8822b,rtw88_8822c,rtw89_core |
+| `__x86_indirect_thunk_rcx` | amdgpu,drm,drm_kms_helper,i915,radeon,xe,ath10k_core,ath10k_pci,ath11k,ath12k,brcmfmac,iwlwifi,mt76,mt7615-common,mt7915e,mt7925-common,mt7925e,mt7996e,rtw88_8723d,rtw88_8814a,rtw88_8821c,rtw88_8822b,rtw88_8822c,rtw88_core,rtw88_pci,rtw89_8922a,rtw89_core,rtw89_pci | amdgpu,drm,drm_kms_helper,i915,radeon,gpu-sched,xe,ath10k_core,ath10k_pci,ath11k,ath12k,brcmfmac,iwlwifi,mt76,mt7615-common,mt7915e,mt7925-common,mt7925e,mt7996e,rtw88_8723d,rtw88_8814a,rtw88_8821c,rtw88_8822b,rtw88_8822c,rtw88_core,rtw88_pci,rtw89_8922a,rtw89_core,rtw89_pci |
+| `_raw_spin_lock` | amdgpu,drm,drm_gpuvm,drm_kms_helper,drm_suballoc_helper,i915,radeon,gpu-sched,ttm,xe,ath11k,ath12k,brcmfmac,iwlwifi,iwlmld,iwlmvm,mt76 | amdgpu,drm,drm_gpuvm,drm_kms_helper,drm_suballoc_helper,i915,radeon,gpu-sched,ttm,xe,ath11k,ath12k,brcmfmac,iwlwifi,iwlmld,iwlmvm,mt76,mt7996e |
+| `_raw_spin_unlock` | amdgpu,drm,drm_gpuvm,drm_kms_helper,drm_suballoc_helper,i915,radeon,gpu-sched,ttm,xe,ath11k,ath12k,brcmfmac,iwlwifi,iwlmld,iwlmvm,mt76 | amdgpu,drm,drm_gpuvm,drm_kms_helper,drm_suballoc_helper,i915,radeon,gpu-sched,ttm,xe,ath11k,ath12k,brcmfmac,iwlwifi,iwlmld,iwlmvm,mt76,mt7996e |
+| `complete` | amdgpu,ath10k_core,ath11k,ath12k,brcmfmac,brcmfmac-cyw,iwlwifi,mt76,rtw88_core,rtw89_core,rtw89_pci | amdgpu,ath10k_core,ath11k,ath12k,brcmfmac,brcmfmac-cyw,iwlwifi,mt76,rtw88_core,rtw89_core |
+| `complete_all` | drm,drm_kms_helper,i915,gpu-sched,xe,ath11k,ath12k,brcmfmac,rtw88_core,rtw89_core | drm,drm_kms_helper,i915,gpu-sched,xe,ath11k,ath12k,brcmfmac,rtw88_core,rtw89_core,rtw89_pci |
+| `completion_done` | xe,ath10k_core,ath11k,ath12k | xe,ath10k_core,ath11k,ath12k,rtw89_core |
 | `debugfs_create_symlink` | drm | drm,xe |
 | `devm_device_add_group` | amdgpu | amdgpu,xe |
+| `dmam_alloc_attrs` | mt76 | mt76,mt7996e |
 | `down_read_trylock` | amdgpu,radeon | amdgpu,radeon,xe |
 | `hmm_range_fault` | amdgpu,xe | amdgpu |
+| `hugetlb_optimize_vmemmap_key` | drm,i915,radeon,ttm,iwlwifi,iwlmld,iwlmvm,mt76,mt7925-common | drm,i915,radeon,ttm,iwlwifi,iwlmld,iwlmvm,mt76,mt7925-common,mt7996e |
 | `i2c_add_adapter` | amdgpu,drm_display_helper,i915,radeon,xe | drm_display_helper,i915,radeon,xe |
 | `i2c_del_adapter` | amdgpu,drm_display_helper,i915,radeon,xe | drm_display_helper,i915,radeon,xe |
+| `ieee80211_set_active_links` | ath12k,iwlmld,iwlmvm,rtw89_core | ath12k,iwlmld,rtw89_core |
+| `ieee80211_set_active_links_async` | iwlmld,iwlmvm,mt7925-common | iwlmld,mt7925-common,mt7996e |
 | `ioremap_wc` | amdgpu,i915,ttm,xe | amdgpu,i915,ttm |
-| `iounmap` | amdgpu,i915,radeon,ttm,xe | amdgpu,i915,radeon,ttm |
+| `iounmap` | amdgpu,i915,radeon,ttm,xe,ath11k,ath12k,brcmfmac | amdgpu,i915,radeon,ttm,ath11k,ath12k,brcmfmac |
+| `jiffies_to_msecs` | amdgpu,i915,radeon,xe,ath11k,ath12k,brcmfmac,iwlwifi,iwlmld,iwlmvm,mt7615-common,mt7921-common,mt7925-common,mt792x-lib | amdgpu,i915,radeon,xe,ath11k,ath12k,brcmfmac,iwlwifi,iwlmld,iwlmvm,mt7615-common,mt7921-common,mt7925-common,mt792x-lib,rtw89_core |
+| `kmem_cache_alloc_noprof` | amdgpu,drm_buddy,i915,gpu-sched,xe,iwlmld,iwlmvm | amdgpu,drm_buddy,i915,gpu-sched,xe,iwlwifi |
+| `kmem_cache_free` | amdgpu,drm_buddy,i915,gpu-sched,xe,iwlmld,iwlmvm | amdgpu,drm_buddy,i915,gpu-sched,xe,iwlwifi |
 | `mmu_interval_notifier_insert` | amdgpu,i915,radeon,xe | amdgpu,i915,radeon |
 | `mmu_interval_notifier_remove` | amdgpu,i915,radeon,xe | amdgpu,i915,radeon |
 | `mmu_interval_read_begin` | amdgpu,i915,radeon,xe | amdgpu,i915,radeon |
-| `mod_delayed_work_on` | drm_kms_helper,gpu-sched,i915,xe | amdgpu,drm_kms_helper,gpu-sched,i915,xe |
-| `mutex_lock` | amdgpu,drm,drm_display_helper,drm_kms_helper,i915,radeon,ttm,virtio-gpu,xe | amdgpu,amdxcp,drm,drm_display_helper,drm_kms_helper,i915,radeon,ttm,virtio-gpu,xe |
-| `mutex_unlock` | amdgpu,drm,drm_display_helper,drm_kms_helper,i915,radeon,ttm,virtio-gpu,xe | amdgpu,amdxcp,drm,drm_display_helper,drm_kms_helper,i915,radeon,ttm,virtio-gpu,xe |
-| `strncmp` | amdgpu,drm,i915,radeon | amdgpu,drm,i915,radeon,xe |
-| `system_wq` | amdgpu,drm,drm_display_helper,drm_kms_helper,gpu-sched,i915,radeon,virtio-gpu,xe | amdgpu,drm_kms_helper,gpu-sched,xe |
-| `vmalloc_noprof` | amdgpu,radeon | amdgpu |
-| `vmemdup_user` | virtio-gpu | amdgpu,virtio-gpu |
-| `vmf_insert_pfn` | drm_shmem_helper | drm_shmem_helper,xe |
-| `vzalloc_noprof` | amdgpu,radeon | amdgpu |
+| `mod_delayed_work_on` | drm_kms_helper,i915,gpu-sched,xe,iwlmvm,rtw89_core | amdgpu,drm_kms_helper,i915,gpu-sched,xe,iwlmvm,rtw89_core |
+| `mutex_lock` | amdgpu,drm_display_helper,drm,drm_kms_helper,i915,radeon,ttm,xe,ath10k_core,ath10k_pci,ath11k,ath12k,brcmfmac,iwlwifi,iwlmld,iwlmvm,mt76,mt7615-common,mt7615e,mt7915e,mt7921-common,mt7921e,mt7925-common,mt7925e,mt792x-lib,mt7996e,rtw88_core,rtw88_pci,rtw89_8851b,rtw89_8852a,rtw89_8852b,rtw89_8852b_common,rtw89_8852bt,rtw89_8852c,rtw89_8922a,rtw89_core | amdgpu,amdxcp,drm_display_helper,drm,drm_kms_helper,i915,radeon,ttm,xe,ath10k_core,ath10k_pci,ath11k,ath12k,brcmfmac,iwlwifi,iwlmld,iwlmvm,mt76,mt7615-common,mt7615e,mt7915e,mt7921-common,mt7921e,mt7925-common,mt7925e,mt792x-lib,mt7996e,rtw88_core,rtw88_pci,rtw89_8851b,rtw89_8852a,rtw89_8852b,rtw89_8852b_common,rtw89_8852bt,rtw89_8852c,rtw89_8922a,rtw89_core |
+| `mutex_unlock` | amdgpu,drm_display_helper,drm,drm_kms_helper,i915,radeon,ttm,xe,ath10k_core,ath10k_pci,ath11k,ath12k,brcmfmac,iwlwifi,iwlmld,iwlmvm,mt76,mt7615-common,mt7615e,mt7915e,mt7921-common,mt7921e,mt7925-common,mt7925e,mt792x-lib,mt7996e,rtw88_core,rtw88_pci,rtw89_8851b,rtw89_8852a,rtw89_8852b,rtw89_8852b_common,rtw89_8852bt,rtw89_8852c,rtw89_8922a,rtw89_core | amdgpu,amdxcp,drm_display_helper,drm,drm_kms_helper,i915,radeon,ttm,xe,ath10k_core,ath10k_pci,ath11k,ath12k,brcmfmac,iwlwifi,iwlmld,iwlmvm,mt76,mt7615-common,mt7615e,mt7915e,mt7921-common,mt7921e,mt7925-common,mt7925e,mt792x-lib,mt7996e,rtw88_core,rtw88_pci,rtw89_8851b,rtw89_8852a,rtw89_8852b,rtw89_8852b_common,rtw89_8852bt,rtw89_8852c,rtw89_8922a,rtw89_core |
+| `nl80211_chan_width_to_mhz` | iwlmld,iwlmvm | iwlmld |
+| `page_offset_base` | amdgpu,drm,i915,radeon,ttm,xe,ath10k_core,ath10k_pci,ath11k,ath12k,brcmfmac,iwlwifi,iwlmld,iwlmvm,mt76,mt7925-common,rtw88_pci,rtw89_pci | amdgpu,drm,i915,radeon,ttm,xe,ath10k_core,ath10k_pci,ath11k,ath12k,brcmfmac,iwlwifi,iwlmld,iwlmvm,mt76,mt7925-common,mt7996e,rtw88_pci,rtw89_pci |
+| `page_pool_put_unrefed_netmem` | mt76 | mt76,mt7996e |
+| `pcie_bandwidth_available` | amdgpu | amdgpu,mt7996e |
+| `phys_base` | amdgpu,i915,ttm,xe,ath10k_core,ath10k_pci,ath11k,ath12k,brcmfmac,iwlwifi,mt76,rtw88_pci,rtw89_pci | amdgpu,i915,ttm,xe,ath10k_core,ath10k_pci,ath11k,ath12k,brcmfmac,iwlwifi,mt76,mt7996e,rtw88_pci,rtw89_pci |
+| `sort` | amdgpu,drm,iwlmld,iwlmvm | amdgpu,drm,iwlmld,iwlmvm,rtw89_core |
+| `strncmp` | amdgpu,drm,i915,radeon,ath11k,brcmfmac,iwlwifi | amdgpu,drm,i915,radeon,xe,ath11k,brcmfmac,iwlwifi |
+| `system_wq` | amdgpu,drm_display_helper,drm,drm_kms_helper,i915,radeon,gpu-sched,xe,ath11k,brcmfmac,iwlwifi,iwlmld,iwlmvm,mt7921-common,mt7925-common,rtw89_core | amdgpu,drm_kms_helper,gpu-sched,xe,iwlmvm,mt7921-common,mt7925-common |
+| `vmalloc_noprof` | amdgpu,radeon,iwlwifi,rtw88_core | amdgpu,iwlwifi,rtw88_core |
+| `vmemmap_base` | amdgpu,drm,i915,radeon,ttm,xe,ath10k_core,ath10k_pci,ath11k,ath12k,brcmfmac,iwlwifi,iwlmld,iwlmvm,mt76,mt7925-common,rtw88_pci,rtw89_pci | amdgpu,drm,i915,radeon,ttm,xe,ath10k_core,ath10k_pci,ath11k,ath12k,brcmfmac,iwlwifi,iwlmld,iwlmvm,mt76,mt7925-common,mt7996e,rtw88_pci,rtw89_pci |
+| `vzalloc_noprof` | amdgpu,radeon,ath10k_core,ath11k_pci,brcmfmac,iwlwifi,mt7615-common,mt7915e,mt7921-common,mt7925-common,mt7996e,rtw88_core,rtw89_core | amdgpu,ath10k_core,ath11k_pci,brcmfmac,iwlwifi,mt7615-common,mt7915e,mt7921-common,mt7925-common,mt7996e,rtw88_core,rtw89_core |
+| `wiphy_delayed_work_cancel` | iwlmld,iwlmvm,rtw89_core | iwlmld,rtw89_core |
+| `wiphy_delayed_work_queue` | iwlmld,iwlmvm,rtw89_core | iwlmld,rtw89_core |
+| `wiphy_delayed_work_timer` | iwlmld,iwlmvm,rtw89_core | iwlmld,rtw89_core |
 
