@@ -4,12 +4,21 @@
 |---|---|
 | interfaces used in v6.15 | 1046 |
 | interfaces used in v6.16 | 1050 |
-| newly used | 11 |
-| no longer used | 7 |
+| likely renames | 1 |
+| newly used (excluding renames) | 10 |
+| no longer used (excluding renames) | 6 |
 | export kind/owner/namespace changed | 0 |
 | used in both, own declaration changed | 6 |
 | changed types reachable from used interfaces | 70 |
 | used interfaces reaching at least one changed type | 480 |
+
+## Likely renames
+
+Dropped and newly used symbols with identical signatures (types and parameter names) and similar names.
+
+| v6.15 | v6.16 | signature | used by |
+|---|---|---|---|
+| `init_timer_key` | `timer_init_key` | `void(struct timer_list* timer, fn(struct timer_list*)->void* func, unsigned int flags, const char* name, struct lock_class_key* key)` | amdgpu,drm,drm_kms_helper,gpu-sched,i915,radeon,xe |
 
 ## Newly used in v6.16
 
@@ -24,7 +33,6 @@
 | `refcount_dec_not_one` | func | vmlinux | plain | lib/refcount.c | drm_shmem_helper |
 | `shmem_writeout` | func | vmlinux | GPL | mm/shmem.c | i915,ttm |
 | `sysfs_update_group` | func | vmlinux | GPL | fs/sysfs/group.c | amdgpu |
-| `timer_init_key` | func | vmlinux | plain | kernel/time/timer.c | amdgpu,drm,drm_kms_helper,gpu-sched,i915,radeon,xe |
 | `writeback_iter` | func | vmlinux | GPL | mm/page-writeback.c | i915 |
 
 ## No longer used in v6.16
@@ -34,7 +42,6 @@
 | `clear_page_dirty_for_io` | func | vmlinux | plain | mm/folio-compat.c | i915 |
 | `console_lock` | func | vmlinux | plain | kernel/printk/printk.c | radeon |
 | `console_unlock` | func | vmlinux | plain | kernel/printk/printk.c | radeon |
-| `init_timer_key` | func | vmlinux | plain | kernel/time/timer.c | amdgpu,drm,drm_kms_helper,gpu-sched,i915,radeon,xe |
 | `llist_add_batch` | func | vmlinux | GPL | lib/llist.c | drm,i915,xe |
 | `pagecache_get_page` | func | vmlinux | plain | mm/folio-compat.c | i915 |
 | `sg_next` | func | vmlinux | plain | lib/scatterlist.c | amdgpu,drm,i915,ttm,virtio-gpu,xe |
@@ -1784,6 +1791,10 @@ Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_a
 Reaches: `const i2c_algorithm i2c_bit_algo`, `function int i2c_bit_add_bus(i2c_adapter*)`, `function void cec_fill_conn_info_from_drm(cec_connector_info*, const drm_connector*)`, `function cec_notifier* cec_notifier_conn_register(device*, const char*, const cec_connector_info*)`, `function void cec_notifier_conn_unregister(cec_notifier*)`, `function void cec_notifier_set_phys_addr(cec_notifier*, u16)`, `function int virtio_dma_buf_attach(dma_buf*, dma_buf_attachment*)`, `function dma_buf* virtio_dma_buf_export(const dma_buf_export_info*)`, `agp_bridge_data* (pci_dev*)* agp_find_bridge`, `const sysfs_ops kobj_sysfs_ops`, `const kernel_param_ops param_ops_bint`, `const kernel_param_ops param_ops_bool`, `const kernel_param_ops param_ops_charp`, `const kernel_param_ops param_ops_hexint`, `const kernel_param_ops param_ops_int` … (+465 more, see impacted.tsv)
 
 </details>
+
+## Header-level interfaces
+
+Not available for this pair (header pass not run for v6.15 and v6.16).
 
 ## Same interface, different set of DRM users
 
